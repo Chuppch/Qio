@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /> -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <!-- <title><%= htmlWebpackPlugin.options.title %></title> -->
+  <title>侨缘信使</title>
+  <!-- <meta name=”viewport” content=”width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,
+    user-scalable=no” /> -->
+  <script>
+    window._AMapSecurityConfig = {
+      securityJsCode: '您的高德API key',
+    }
+  </script>
+  <script type="text/javascript"
+    src='https://webapi.amap.com/maps?v=1.4.11&key=您的高德API密钥&plugin=AMap.PlaceSearch'></script>
+  <script src="https://webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
+  <!-- <script src="https://cdn.bootcdn.net/ajax/libs/marked/13.0.2/marked.min.js"></script> -->
+  <meta name="description" content="跨越四海，侨缘一线牵-侨缘信使，让世界没有距离。">
+  <meta name="description"
+    content="《侨缘信使》是一个旨在宣传和传承侨批文化的互动网站。实现了对传统文化的创造性转化与创新性发展。用户可以在站内学习侨批文化、体验写侨批、收侨批和漂流瓶等功能，感受慢信文化的魅力，用户可以通过知识问答、故事探索、翻翻乐等互动游戏体验侨批文化并获取猪仔钱，兑换服务于写侨批功能的纸张、字体等">
+  <meta name="keywords" content="侨缘信使,侨批,侨批文化,写信,传统文化,侨批历史,侨批简洁">
+</head>
+
+<body>
+  <noscript>
+    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
+        Please enable it to continue.</strong>
+  </noscript>
+  <div id="app"></div>
+  <!-- built files will be auto injected -->
+</body>
+
+</html>

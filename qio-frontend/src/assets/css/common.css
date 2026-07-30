@@ -1,0 +1,79 @@
+/* 隐藏el-scrollbar的横向滚动条 */
+.el-scrollbar {
+  .el-scrollbar__wrap {
+    overflow-x: hidden;
+
+    .el-scrollbar__view {
+      height: 100%;
+    }
+  }
+
+  /* background-color: transparent; */
+}
+
+/* // el-selec下拉框底部遮盖问题 */
+.el-select-dropdown .el-scrollbar {
+  padding-bottom: 17px;
+}
+
+/* // el-selec暂无数据的底部遮盖问题 */
+.el-select-dropdown .el-scrollbar.is-empty {
+  padding-bottom: 0;
+}
+
+/* // el-cascader下拉框底部遮盖问题 */
+.el-cascader__suggestion-panel.el-scrollbar {
+  padding-bottom: 17px;
+}
+
+/* // el-cascader暂无数据的底部遮盖问题 */
+.el-cascader__dropdown .el-cascader-panel .el-scrollbar {
+  padding-bottom: 17px;
+}
+
+/* // el-popover的z-index问题 */
+.el-popover {
+  z-index: 9999 !important;
+}
+
+/* 就这两条样式，修了一天 */
+.animate-move-center {
+  /* position: relative; */
+  animation-delay: 0.3s;
+  animation: moveCenter 2s ease-in-out forwards;
+}
+
+@keyframes moveCenter {
+  from {
+    left: var(--pre-left);
+    top: var(--pre-top);
+    transform: var(--pre-transform);
+    /* transform: translateX(0); */
+  }
+
+  to {
+    left: var(--target-left);
+    top: var(--target-top);
+    transform: var(--target-transform);
+    /* transform: translateX(calc(50% - var(--image-width) / 2)); */
+  }
+}
+
+/* 反向动画 */
+.animate-back-to-original {
+  animation: backToOriginal 2s ease-in-out forwards;
+}
+
+@keyframes backToOriginal {
+  from {
+    left: var(--target-left);
+    top: var(--target-top);
+    transform: var(--target-transform);
+  }
+
+  to {
+    left: var(--pre-left);
+    top: var(--pre-top);
+    transform: var(--pre-transform);
+  }
+}

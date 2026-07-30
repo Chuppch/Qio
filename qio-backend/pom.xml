@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.3</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.qiaopi</groupId>
+    <artifactId>Qiaopi</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.1</version>
+    <name>Qiaopi</name>
+    <description>Qiaopi</description>
+    <url/>
+
+    <repositories>
+        <repository>
+            <id>central-repos1</id>
+            <name>Central Repository 2</name>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+    </repositories>
+    <properties>
+        <spring-boot.version>3.3.3</spring-boot.version>
+        <spring-boot.mail>3.3.1</spring-boot.mail>
+        <druid>1.2.23</druid>
+        <lombok>1.18.20</lombok>
+        <mybatis-plus>3.5.7</mybatis-plus>
+        <mybatis>3.0.3</mybatis>
+        <knife4j>4.4.0</knife4j>
+        <hutool>5.8.25</hutool>
+        <mysql>8.3.0</mysql>
+        <jjwt>0.12.6</jjwt>
+        <jakarta.servlet>6.0.0</jakarta.servlet>
+        <jakarta.xml>4.0.0</jakarta.xml>
+        <redis>3.3.2</redis>
+        <alioss>3.18.1</alioss>
+        <x-file>2.2.1</x-file>
+        <minio>8.5.2</minio>
+        <fastjson>2.0.53</fastjson>
+        <httpclient>5.3.1</httpclient>
+        <oapi>release-V4-2.3.1</oapi>
+        <amqp>2.7.12</amqp>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--AMQP依赖，包含RabbitMQ-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-amqp</artifactId>
+                <version>${amqp}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.bigmodel.openapi</groupId>
+                <artifactId>oapi-java-sdk</artifactId>
+                <version>${oapi}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents.client5</groupId>
+                <artifactId>httpclient5</artifactId>
+                <version>${httpclient}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${alioss}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.dromara.x-file-storage</groupId>
+                <artifactId>x-file-storage-spring</artifactId>
+                <version>${x-file}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>${redis}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-mail</artifactId>
+                <version>${spring-boot.mail}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>${mysql}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <scope>test</scope>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.mybatis</groupId>
+                        <artifactId>mybatis-spring</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-spring</artifactId>
+                <version>${mybatis}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>${knife4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <modules>
+        <module>Qiaopi-server</module>
+        <module>Qiaopi-pojo</module>
+        <module>Qiaopi-common</module>
+    </modules>
+</project>

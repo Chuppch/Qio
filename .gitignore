@@ -1,0 +1,75 @@
+# ========================
+# OS generated files
+# ========================
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ========================
+# Editor / IDE
+# ========================
+.idea/
+.vscode/
+*.iml
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ========================
+# Backend (Java / Spring Boot)
+# ========================
+*.class
+*.log
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+replay_pid*
+
+# Maven
+**/target/
+
+# Spring Boot profiles (keep base and dev only)
+qio-backend/**/application-*.yml
+!qio-backend/**/application.yml
+!qio-backend/**/application-dev.yml
+
+# Mobile Tools for Java
+.mtj.tmp/
+
+# ========================
+# Frontend (Node.js / Vue)
+# ========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+qio-frontend/dist/
+qio-frontend/build/
+
+# Local env files
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Log files
+logs/
