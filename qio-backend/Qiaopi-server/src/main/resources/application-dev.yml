@@ -8,7 +8,7 @@ qiaopi:
     # 设置前端传递过来的令牌名称
     user-token-name: Authorization
   rabbitmq:
-    host: 您的虚拟机ip
+    host: localhost
     port: 5672
     virtual-host: /
     username: root
@@ -30,16 +30,16 @@ qiaopi:
     username: 您的QQ邮箱
     password: 您的邮箱授权码
   minio:
-    access-key: 您的minio配置的令牌
-    secret-key: 您的minio配置的密钥
-    end-point: http://您的虚拟机ip:9000
+    access-key: minioadmin
+    secret-key: minioadmin
+    end-point: http://localhost:9000
     bucket-name: qiaopi
-    domain: http://您的虚拟机ip:9000/qiaopi/
+    domain: http://localhost:9000/qiaopi/
     base-path: qiaopi-images/
   aes:
     secret-key: qiaopiqiaopiqiaopiqiaopiqiaopinb
   zhipu:
-    api-key: 您申请的智谱API密钥
+    api-key: fake_key.fake_secret
 
 
 # knife4j项目访问访问地址:http://127.0.0.1:8080/doc.html#/home

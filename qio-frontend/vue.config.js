@@ -23,11 +23,11 @@ module.exports = {
   devServer: {
     client: { overlay: { runtimeErrors: false } }, // 处理开发环境的全屏异常报错
     host: 'localhost',
-    port: 80,
+    port: 3010,
     proxy: {
       '/api': {
         // 设置代理的目标URL
-        target: 'http://localhost:8080/',
+        target: 'http://localhost:3031/',
         changeOrigin: true,
         pathRewrite: {
           '^/api': '' // 将请求中的/api路径替换为空

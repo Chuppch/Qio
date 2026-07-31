@@ -27,7 +27,7 @@
         <spring-boot.version>3.3.3</spring-boot.version>
         <spring-boot.mail>3.3.1</spring-boot.mail>
         <druid>1.2.23</druid>
-        <lombok>1.18.20</lombok>
+        <lombok>1.18.46</lombok>
         <mybatis-plus>3.5.7</mybatis-plus>
         <mybatis>3.0.3</mybatis>
         <knife4j>4.4.0</knife4j>
@@ -161,4 +161,22 @@
         <module>Qiaopi-pojo</module>
         <module>Qiaopi-common</module>
     </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
