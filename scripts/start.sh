@@ -3,28 +3,28 @@
 
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-echo "🚀 启动 Colima..."
+echo "启动 Colima..."
 colima start --cpu 2 --memory 4
 
-echo "🐳 启动中间件容器..."
+echo "启动中间件容器..."
 cd "$PROJECT_ROOT" && docker compose up -d
 
-echo "⏳ 等待 MySQL 就绪..."
+echo "等待 MySQL 就绪..."
 sleep 8
 
-echo "☕ 启动后端（端口 3031）..."
+echo "启动后端（端口 3031）..."
 cd "$PROJECT_ROOT/qio-backend" && mvn spring-boot:run -pl Qiaopi-server &
 BACKEND_PID=$!
 
-echo "⏳ 等待后端启动..."
+echo "等待后端启动..."
 sleep 15
 
-echo "🌐 启动前端（端口 3010）..."
+echo "启动前端（端口 3010）..."
 cd "$PROJECT_ROOT/qio-frontend" && npm run serve &
 FRONTEND_PID=$!
 
 echo ""
-echo "✅ 开发环境已启动"
+echo "开发环境已启动"
 echo ""
 echo "  前端: http://localhost:3010"
 echo "  后端: http://localhost:3031"
