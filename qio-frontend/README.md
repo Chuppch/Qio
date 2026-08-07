@@ -6,7 +6,7 @@
 <p align="center">
 	<a href="https://github.com/Chuppch/qiaopi-master-frontend"><img src="https://img.shields.io/badge/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B-github?logo=github&label=github&color=%23181717"></a>
     <a href="https://github.com/Chuppch/Qiaopi-master"><img src="https://img.shields.io/badge/%E5%90%8E%E7%AB%AF%E5%B7%A5%E7%A8%8B-github?logo=github&label=github&color=%23181717"></a>
-    <a href="https://github.com/Chuppch/agent-hub"><img src="https://img.shields.io/badge/Agent%E5%90%8E%E7%AB%AF%E5%B7%A5%E7%A8%8B-github?logo=github&label=github&color=%23181717"></a>
+    <a href="https://github.com/Chuppch/qio-agent-service"><img src="https://img.shields.io/badge/Agent%E5%90%8E%E7%AB%AF%E5%B7%A5%E7%A8%8B-github?logo=github&label=github&color=%23181717"></a>
 	<a href="https://github.com/Chuppch/Qiaopi-master"><img src="https://img.shields.io/badge/Qiaopi-v1.0.1-brightgreen.svg"></a>
 	<a href="https://github.com/Chuppch/Qiaopi-master?tab=MIT-1-ov-file"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
 </p>
