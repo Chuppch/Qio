@@ -1,0 +1,683 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Qio Agent Platform — Detailed Architecture",
+    "subtitle": "代码实况：配置控制面、动态装配、执行策略、RAG 数据面与 Qio 输出闭环",
+    "output": "qio-agent-platform.html",
+    "visual_preset": "blueprint",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Chuppch/Qio",
+      "revision": "1d329326ddc65d221010abb485b5d18df4920a7b"
+    },
+    "viewBox": [2300, 1450]
+  },
+  "components": [
+    {
+      "id": "agent_console",
+      "type": "frontend",
+      "label": "Agent Console",
+      "sublabel": "模型 / Prompt / Advisor / MCP / RAG / 流程编排",
+      "tag": "React 18 + FlowGram",
+      "sources": [
+        {
+          "path": "qio-agent-console/src/config/api.ts",
+          "line": 13,
+          "label": "Console API base"
+        }
+      ],
+      "pos": [60, 140],
+      "size": [210, 90]
+    },
+    {
+      "id": "admin_controllers",
+      "type": "backend",
+      "label": "Admin Controller 集合",
+      "sublabel": "CRUD · 登录 · 统计 · 流程配置 · 文件上传",
+      "tag": "/api/v1/admin/*",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-trigger/src/main/java/com/chuppch/trigger/http/admin/AiAgentDrawAdminController.java",
+          "line": 40,
+          "label": "Draw config API"
+        },
+        {
+          "path": "qio-agent-service/qio-agent-trigger/src/main/java/com/chuppch/trigger/http/admin/AiClientRagOrderAdminController.java",
+          "line": 30,
+          "label": "RAG admin API"
+        }
+      ],
+      "pos": [350, 140],
+      "size": [230, 90]
+    },
+    {
+      "id": "draw_config_parser",
+      "type": "backend",
+      "label": "DrawConfigParser",
+      "sublabel": "画布 JSON → Agent / Client / 关系配置",
+      "tag": "事务内批量持久化",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-trigger/src/main/java/com/chuppch/trigger/http/admin/util/DrawConfigParser.java",
+          "line": 1,
+          "label": "Flow parser"
+        }
+      ],
+      "pos": [680, 140],
+      "size": [220, 90]
+    },
+    {
+      "id": "agent_repository",
+      "type": "backend",
+      "label": "AgentRepository",
+      "sublabel": "Domain Port → MyBatis DAO / PO / VO 映射",
+      "tag": "qio-agent-infrastructure",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-infrastructure/src/main/java/com/chuppch/infrastructure/adapter/repository/AgentRepository.java",
+          "line": 26,
+          "label": "Repository adapter"
+        },
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/adapter/repository/IAgentRepository.java",
+          "line": 14,
+          "label": "Domain port"
+        }
+      ],
+      "pos": [1010, 140],
+      "size": [230, 90]
+    },
+    {
+      "id": "mysql_config",
+      "type": "database",
+      "label": "MySQL 配置模型",
+      "sublabel": "Agent · Flow · Client · API · Model · Prompt · Advisor · MCP",
+      "tag": "13 张中台表",
+      "sources": [
+        {
+          "path": "qio-agent-service/docs/dev-ops/mysql/sql/qio-agent-init.sql",
+          "line": 30,
+          "label": "Database schema"
+        }
+      ],
+      "pos": [1010, 340],
+      "size": [230, 96]
+    },
+    {
+      "id": "armory_pipeline",
+      "type": "backend",
+      "label": "Armory 动态装配链",
+      "sublabel": "OpenAiApi → MCP Client → Model → Advisor → ChatClient",
+      "tag": "类已实现 · Bean 接线待补",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/service/armory/ArmoryService.java",
+          "line": 24,
+          "label": "Armory service"
+        },
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/service/armory/node/RootNode.java",
+          "line": 21,
+          "label": "Assembly root"
+        }
+      ],
+      "pos": [1340, 140],
+      "size": [250, 96]
+    },
+    {
+      "id": "bean_registry",
+      "type": "cloud",
+      "label": "Spring Bean Registry",
+      "sublabel": "OpenAiApi / McpSyncClient / Model / Advisor / ChatClient",
+      "tag": "运行时按 ID 注册",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/service/armory/node/AiClientNode.java",
+          "line": 70,
+          "label": "ChatClient assembly"
+        },
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/service/armory/node/AiClientModelNode.java",
+          "line": 59,
+          "label": "Model assembly"
+        }
+      ],
+      "pos": [1690, 140],
+      "size": [250, 96]
+    },
+    {
+      "id": "qio_backend",
+      "type": "backend",
+      "label": "Qio 业务后端",
+      "sublabel": "统一入口 · 会话/信件状态 · 输出策略编排",
+      "tag": "唯一对外业务 API",
+      "pos": [60, 700],
+      "size": [210, 90]
+    },
+    {
+      "id": "qio_frontend",
+      "type": "frontend",
+      "label": "Qio 前端",
+      "sublabel": "写信 · 对话 · 流式结果呈现",
+      "tag": "仅连接 Qio 业务后端",
+      "pos": [60, 1000],
+      "size": [210, 90]
+    },
+    {
+      "id": "qio_output_processor",
+      "type": "backend",
+      "label": "Qio Output Pipeline",
+      "sublabel": "过滤 · 品牌语气 · 信件格式 · 审核 · 落库",
+      "tag": "可插拔业务处理链",
+      "pos": [350, 1000],
+      "size": [230, 96]
+    },
+    {
+      "id": "execution_adapter_gap",
+      "type": "security",
+      "label": "Execution HTTP Adapter",
+      "sublabel": "应将请求转换为 ExecuteCommandEntity + SSE",
+      "tag": "当前未发现 Controller 接线",
+      "pos": [350, 700],
+      "size": [230, 96]
+    },
+    {
+      "id": "dispatch_service",
+      "type": "backend",
+      "label": "AgentDispatchService",
+      "sublabel": "查询 Agent.strategy → 选择 IExecuteStrategy",
+      "tag": "能力已实现",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/service/dispatch/AgentDispatchDispatchService.java",
+          "line": 24,
+          "label": "Dispatch service"
+        }
+      ],
+      "pos": [680, 700],
+      "size": [220, 96]
+    },
+    {
+      "id": "async_streaming",
+      "type": "messagebus",
+      "label": "Async + Streaming",
+      "sublabel": "提交策略 · 收集 Flux · ResponseBodyEmitter · complete",
+      "tag": "异步流式输出",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/service/dispatch/AgentDispatchDispatchService.java",
+          "line": 39,
+          "label": "Async dispatch"
+        },
+        {
+          "path": "qio-agent-service/qio-agent-app/src/main/java/com/chuppch/config/ThreadPoolConfig.java",
+          "line": 14,
+          "label": "Thread pool bean"
+        }
+      ],
+      "pos": [1010, 700],
+      "size": [230, 96]
+    },
+    {
+      "id": "fixed_strategy",
+      "type": "backend",
+      "label": "Fixed Strategy",
+      "sublabel": "按 FlowConfig 顺序调用 ChatClient",
+      "tag": "fixed",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/service/excutor/fixed/FixedAgentExecuteStrategy.java",
+          "line": 27,
+          "label": "Fixed execution"
+        }
+      ],
+      "pos": [1340, 550],
+      "size": [220, 88]
+    },
+    {
+      "id": "auto_strategy",
+      "type": "backend",
+      "label": "Auto Strategy",
+      "sublabel": "分析 → 精准执行 → 质量监督 → 总结",
+      "tag": "auto · 最大步数",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/service/excutor/auto/AutoAgentExecuteStrategy.java",
+          "line": 22,
+          "label": "Auto execution"
+        },
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/service/excutor/auto/step/Step1AnalyzerNode.java",
+          "line": 18,
+          "label": "Analyzer step"
+        }
+      ],
+      "pos": [1340, 700],
+      "size": [220, 96]
+    },
+    {
+      "id": "flow_strategy",
+      "type": "backend",
+      "label": "Flow Strategy",
+      "sublabel": "MCP 分析 → 规划 → 解析步骤 → 顺序执行",
+      "tag": "flow · 失败统计",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/service/excutor/flow/FlowAgentExecuteStrategy.java",
+          "line": 21,
+          "label": "Flow execution"
+        },
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/service/excutor/flow/step/Step4ExecuteStepsNode.java",
+          "line": 27,
+          "label": "Execute steps"
+        }
+      ],
+      "pos": [1340, 860],
+      "size": [220, 96]
+    },
+    {
+      "id": "chatclient_runtime",
+      "type": "cloud",
+      "label": "ChatClient Runtime",
+      "sublabel": "System Prompt · Advisor[] · MCP ToolCallbacks",
+      "tag": "Spring AI",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/service/armory/node/AiClientNode.java",
+          "line": 51,
+          "end_line": 77,
+          "label": "Runtime client"
+        }
+      ],
+      "pos": [1690, 700],
+      "size": [250, 96]
+    },
+    {
+      "id": "model_provider",
+      "type": "external",
+      "label": "OpenAI-compatible 模型",
+      "sublabel": "Chat Completions / Embeddings",
+      "tag": "外部模型服务",
+      "pos": [2050, 600],
+      "size": [210, 88]
+    },
+    {
+      "id": "mcp_servers",
+      "type": "external",
+      "label": "MCP Servers",
+      "sublabel": "SSE / stdio 外部工具服务",
+      "tag": "SyncMcpToolCallbackProvider",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/service/armory/node/AiClientToolMcpNode.java",
+          "line": 77,
+          "label": "MCP transport"
+        }
+      ],
+      "pos": [2050, 820],
+      "size": [210, 88]
+    },
+    {
+      "id": "rag_upload_controller",
+      "type": "backend",
+      "label": "RAG Upload API",
+      "sublabel": "multipart files + name + knowledge tag",
+      "tag": "Admin endpoint",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-trigger/src/main/java/com/chuppch/trigger/http/admin/AiClientRagOrderAdminController.java",
+          "line": 423,
+          "label": "Upload endpoint"
+        }
+      ],
+      "pos": [350, 1170],
+      "size": [230, 90]
+    },
+    {
+      "id": "rag_ingestion",
+      "type": "backend",
+      "label": "RAG Ingestion Pipeline",
+      "sublabel": "TikaDocumentReader → TokenTextSplitter → knowledge metadata",
+      "tag": "文档摄取",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-domain/src/main/java/com/chuppch/domain/agent/service/rag/RagService.java",
+          "line": 22,
+          "end_line": 52,
+          "label": "RAG service"
+        }
+      ],
+      "pos": [680, 1170],
+      "size": [240, 96]
+    },
+    {
+      "id": "embedding_pipeline",
+      "type": "cloud",
+      "label": "Embedding Pipeline",
+      "sublabel": "OpenAiEmbeddingModel · dimensions 1536",
+      "tag": "PgVectorStore Bean",
+      "sources": [
+        {
+          "path": "qio-agent-service/qio-agent-app/src/main/java/com/chuppch/config/AiAgentConfig.java",
+          "line": 26,
+          "end_line": 57,
+          "label": "Vector store config"
+        }
+      ],
+      "pos": [1010, 1170],
+      "size": [230, 96]
+    },
+    {
+      "id": "pgvector_store",
+      "type": "database",
+      "label": "PostgreSQL + pgvector",
+      "sublabel": "vector_store_openai · VECTOR(1536)",
+      "tag": "相似度检索 / RAG Advisor",
+      "sources": [
+        {
+          "path": "qio-agent-service/docs/dev-ops/pgvector/sql/init.sql",
+          "line": 31,
+          "label": "Vector schema"
+        }
+      ],
+      "pos": [1340, 1170],
+      "size": [230, 96]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "配置控制面（已接通）",
+      "wraps": [
+        "agent_console",
+        "admin_controllers",
+        "draw_config_parser",
+        "agent_repository",
+        "mysql_config"
+      ],
+      "pad": 26
+    },
+    {
+      "kind": "region",
+      "label": "动态装配面（实现存在，触发接线待补）",
+      "wraps": ["armory_pipeline", "bean_registry"],
+      "pad": 26
+    },
+    {
+      "kind": "region",
+      "label": "Agent 执行内核（Domain）",
+      "wraps": [
+        "dispatch_service",
+        "async_streaming",
+        "fixed_strategy",
+        "auto_strategy",
+        "flow_strategy",
+        "chatclient_runtime"
+      ],
+      "pad": 30
+    },
+    {
+      "kind": "security-group",
+      "label": "Qio Runtime 接入缺口",
+      "wraps": ["execution_adapter_gap"],
+      "pad": 24
+    },
+    {
+      "kind": "region",
+      "label": "RAG 数据面（已实现摄取链）",
+      "wraps": [
+        "rag_upload_controller",
+        "rag_ingestion",
+        "embedding_pipeline",
+        "pgvector_store"
+      ],
+      "pad": 28
+    }
+  ],
+  "connections": [
+    {
+      "id": "console_admin_api",
+      "from": "agent_console",
+      "to": "admin_controllers",
+      "label": "Admin REST",
+      "variant": "security"
+    },
+    {
+      "id": "save_draw_config",
+      "from": "admin_controllers",
+      "to": "draw_config_parser",
+      "label": "save-config"
+    },
+    {
+      "id": "parsed_config_to_repo",
+      "from": "draw_config_parser",
+      "to": "agent_repository",
+      "label": "关系与 FlowConfig",
+      "labelAt": [900, 244]
+    },
+    {
+      "id": "repository_mysql",
+      "from": "agent_repository",
+      "to": "mysql_config",
+      "label": "MyBatis",
+      "labelAt": [1125, 244]
+    },
+    {
+      "id": "config_to_armory",
+      "from": "agent_repository",
+      "to": "armory_pipeline",
+      "label": "加载启用配置",
+      "labelAt": [1264, 244],
+      "variant": "dashed"
+    },
+    {
+      "id": "armory_registers_beans",
+      "from": "armory_pipeline",
+      "to": "bean_registry",
+      "label": "动态 registerBean",
+      "variant": "dashed"
+    },
+    {
+      "id": "planned_qio_request",
+      "from": "qio_backend",
+      "to": "execution_adapter_gap",
+      "label": "计划接入",
+      "via": [[300, 745], [300, 780], [320, 780], [320, 748]],
+      "variant": "dashed"
+    },
+    {
+      "id": "missing_adapter_dispatch",
+      "from": "execution_adapter_gap",
+      "to": "dispatch_service",
+      "label": "尚未接线",
+      "variant": "dashed"
+    },
+    {
+      "id": "dispatch_reads_agent",
+      "from": "dispatch_service",
+      "to": "agent_repository",
+      "label": "查询 strategy"
+    },
+    {
+      "id": "dispatch_async",
+      "from": "dispatch_service",
+      "to": "async_streaming",
+      "label": "submit + SSE",
+      "labelAt": [924, 810]
+    },
+    {
+      "id": "async_fixed",
+      "from": "async_streaming",
+      "to": "fixed_strategy"
+    },
+    {
+      "id": "async_auto",
+      "from": "async_streaming",
+      "to": "auto_strategy"
+    },
+    {
+      "id": "async_flow",
+      "from": "async_streaming",
+      "to": "flow_strategy"
+    },
+    {
+      "id": "fixed_chatclient",
+      "from": "fixed_strategy",
+      "to": "chatclient_runtime"
+    },
+    {
+      "id": "auto_chatclient",
+      "from": "auto_strategy",
+      "to": "chatclient_runtime"
+    },
+    {
+      "id": "flow_chatclient",
+      "from": "flow_strategy",
+      "to": "chatclient_runtime"
+    },
+    {
+      "id": "registry_runtime",
+      "from": "bean_registry",
+      "to": "chatclient_runtime",
+      "label": "按 clientId 获取",
+      "labelAt": [1815, 250]
+    },
+    {
+      "id": "runtime_model",
+      "from": "chatclient_runtime",
+      "to": "model_provider",
+      "label": "Chat 请求 / 流式响应",
+      "variant": "emphasis"
+    },
+    {
+      "id": "runtime_output_to_qio",
+      "from": "chatclient_runtime",
+      "to": "qio_output_processor",
+      "label": "GenerativeResult 流（经策略 / Emitter）",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "right",
+      "via": [[1815, 1080], [620, 1080], [620, 1048]],
+      "labelAt": [1100, 1050]
+    },
+    {
+      "id": "qio_output_to_backend",
+      "from": "qio_output_processor",
+      "to": "qio_backend",
+      "label": "加工后事件流",
+      "variant": "emphasis",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "via": [[465, 950], [300, 950], [300, 830], [165, 830]]
+    },
+    {
+      "id": "qio_backend_to_frontend",
+      "from": "qio_backend",
+      "to": "qio_frontend",
+      "label": "业务 SSE / JSON",
+      "variant": "emphasis",
+      "fromSide": "left",
+      "toSide": "left",
+      "via": [[24, 745], [24, 1045]],
+      "labelAt": [95, 900]
+    },
+    {
+      "id": "runtime_mcp",
+      "from": "chatclient_runtime",
+      "to": "mcp_servers",
+      "label": "Tool Call",
+      "variant": "dashed"
+    },
+    {
+      "id": "upload_to_ingestion",
+      "from": "rag_upload_controller",
+      "to": "rag_ingestion",
+      "label": "Multipart files",
+      "labelAt": [604, 1274]
+    },
+    {
+      "id": "ingestion_embedding",
+      "from": "rag_ingestion",
+      "to": "embedding_pipeline",
+      "label": "Document chunks"
+    },
+    {
+      "id": "embedding_pgvector",
+      "from": "embedding_pipeline",
+      "to": "pgvector_store",
+      "label": "VECTOR(1536)",
+      "labelAt": [1264, 1280]
+    },
+    {
+      "id": "embedding_model_api",
+      "from": "embedding_pipeline",
+      "to": "model_provider",
+      "label": "Embedding API",
+      "fromSide": "bottom",
+      "toSide": "bottom",
+      "via": [[1125, 1340], [2280, 1340], [2280, 730], [2155, 730]],
+      "variant": "dashed"
+    },
+    {
+      "id": "rag_advisor_retrieval",
+      "from": "chatclient_runtime",
+      "to": "pgvector_store",
+      "label": "RAG Advisor 检索",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "六模块工程边界",
+      "items": [
+        "app：Spring Boot 启动与 DataSource / VectorStore / ThreadPool Bean",
+        "api + types：接口 DTO、统一响应、枚举与跨模块公共类型",
+        "trigger → domain ← infrastructure：入口依赖领域能力，持久化实现领域 Port"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "动态装配链",
+      "items": [
+        "Armory 从 Agent → Client → Model/API/MCP/Prompt/Advisor 关系加载启用配置",
+        "Root → OpenAiApi → MCP → Model → Advisor → ChatClient，最终按业务 ID 注册 Bean"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "三种执行策略",
+      "items": [
+        "fixed：按既定 FlowConfig 顺序执行；auto：分析、执行、监督、总结",
+        "flow：MCP 工具分析、任务规划、步骤解析、顺序执行并记录失败统计"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "RAG 数据链",
+      "items": [
+        "上传文件经 Tika 读取、TokenTextSplitter 切块，并写入 knowledge 标签",
+        "EmbeddingModel 生成 1536 维向量写入 pgvector；RAG Order 元数据写入 MySQL"
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "Qio 输出闭环（目标架构）",
+      "items": [
+        "模型流回到 ChatClient，经执行策略与 ResponseBodyEmitter 形成结构化事件流",
+        "Qio 后端完成过滤、品牌语气、信件格式、审核与落库，再统一输出给前端"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "当前代码级缺口",
+      "items": [
+        "未发现调用 IAgentDispatchService 的 HTTP Controller；Qio 主站尚不能执行 Agent",
+        "ArmoryService 未发现 Bean 注册或配置保存后的装配触发；Console Run 目前仅播放前端节点动画",
+        "Redis 仅见配置/说明，未发现 RedisTemplate 或具体 Adapter；不应视为已接通运行依赖"
+      ]
+    }
+  ]
+}
