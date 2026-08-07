@@ -1,0 +1,22 @@
+services:
+  qio-agent-console:
+    image: qio-agent-console:1.0
+    container_name: qio-agent-console
+    ports:
+      - "3002:3002"
+    restart: unless-stopped
+    networks:
+      - qio-agent-network
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  qio-agent-network:
+    driver: bridge
+    name: qio-agent-network

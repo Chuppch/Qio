@@ -1,0 +1,9 @@
+/node_modules/
+/.local-config
+/.eslintcache
+
+# 数据库相关文件（包含敏感信息）
+docs/*.sql
+docs/mcp.json
+docs/query.json
+docs/save.json
