@@ -13,11 +13,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Entity基类
- * 
- * @author Abin
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -6,12 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-
-/**
- * 获取IP方法
- * 
- * @author Abin
- */
 public class IpUtils
 {
     public final static String REGX_0_255 = "(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)";

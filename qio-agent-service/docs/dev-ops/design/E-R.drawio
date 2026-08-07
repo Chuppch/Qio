@@ -1,0 +1,128 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.0.3 Chrome/140.0.7339.249 Electron/38.7.0 Safari/537.36" version="29.0.3">
+  <diagram name="第 1 页" id="Kq_At_G345Mttn06xITw">
+    <mxGraphModel dx="1200" dy="741" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="6000" pageHeight="4000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-1" value="顾问配置表&lt;div&gt;ai-client-advisor&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="520" y="670" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-2" value="MCP工具配置表&lt;div&gt;ai-client-tool-mcp&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="680" y="670" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-3" value="系统提示词配置表&lt;div&gt;ai-client-system-prompt&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="360" y="670" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="6Qmy9toomcpHZM7UD8PP-4" target="6Qmy9toomcpHZM7UD8PP-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="6Qmy9toomcpHZM7UD8PP-4" target="6Qmy9toomcpHZM7UD8PP-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-4" value="AI客户端&lt;div&gt;ai-client&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="420" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="6Qmy9toomcpHZM7UD8PP-5" target="6Qmy9toomcpHZM7UD8PP-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-30" value="拥有多个模型" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="6Qmy9toomcpHZM7UD8PP-22">
+          <mxGeometry x="-0.1167" y="2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-5" value="智能体配置表&lt;div&gt;(ai-agent)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="200" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-7" value="AI客户端统一关联配置表&lt;div&gt;ai-client-config&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="530" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="6Qmy9toomcpHZM7UD8PP-8" target="6Qmy9toomcpHZM7UD8PP-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-24" value="进行配置" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="6Qmy9toomcpHZM7UD8PP-14">
+          <mxGeometry x="-0.0762" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-8" value="AI客户端API配置表&lt;div&gt;ai-client-api&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="200" y="800" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-9" value="智能体-客户端关联表&lt;div&gt;ai-agent-flow-config&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="310" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.122;entryY=1.017;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="6Qmy9toomcpHZM7UD8PP-10" target="6Qmy9toomcpHZM7UD8PP-7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="260" y="620" />
+              <mxPoint x="455" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-25" value="进行 配置" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="6Qmy9toomcpHZM7UD8PP-16">
+          <mxGeometry x="-0.0691" y="2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-10" value="聊天模型配置表&lt;div&gt;ai-client-model&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="670" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.833;entryY=1.039;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="6Qmy9toomcpHZM7UD8PP-2" target="6Qmy9toomcpHZM7UD8PP-7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="620" />
+              <mxPoint x="540" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-28" value="进行配置" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="6Qmy9toomcpHZM7UD8PP-18">
+          <mxGeometry x="-0.0444" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.35;entryY=1.017;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="6Qmy9toomcpHZM7UD8PP-3" target="6Qmy9toomcpHZM7UD8PP-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-26" value="进行配置" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="6Qmy9toomcpHZM7UD8PP-19">
+          <mxGeometry x="-0.669" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.583;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="6Qmy9toomcpHZM7UD8PP-1" target="6Qmy9toomcpHZM7UD8PP-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-27" value="进行配置" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="6Qmy9toomcpHZM7UD8PP-20">
+          <mxGeometry x="-0.6756" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-31" value="智能体配置表&lt;div&gt;(ai-agent)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="200" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-32" value="智能体-客户端关联表&lt;div&gt;ai-agent-flow-config&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="310" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-33" value="AI客户端&lt;div&gt;ai-client&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="420" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-34" value="AI客户端统一关联配置表&lt;div&gt;ai-client-config&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="530" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-40" value="智能体配置表&lt;div&gt;(ai-agent)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="440" y="200" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-41" value="智能体-客户端关联表&lt;div&gt;ai-agent-flow-config&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="440" y="310" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-42" value="AI客户端&lt;div&gt;ai-client&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="440" y="420" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-43" value="AI客户端统一关联配置表&lt;div&gt;ai-client-config&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="440" y="530" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6Qmy9toomcpHZM7UD8PP-44" value="聊天模型配置表&lt;div&gt;ai-client-model&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="200" y="670" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

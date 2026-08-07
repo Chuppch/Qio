@@ -1,0 +1,1 @@
+docker stop qio-agent-service

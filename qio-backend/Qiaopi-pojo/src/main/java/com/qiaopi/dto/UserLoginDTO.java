@@ -5,11 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 用户登录对象
- *
- * @author Abin
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

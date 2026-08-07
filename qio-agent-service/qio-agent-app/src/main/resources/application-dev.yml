@@ -1,0 +1,83 @@
+server:
+  port: 8091
+
+# 线程池配置
+thread:
+  pool:
+    executor:
+      config:
+        core-pool-size: 20
+        max-pool-size: 50
+        keep-alive-time: 5000
+        block-queue-size: 5000
+        policy: CallerRunsPolicy
+
+# 数据库配置；启动时配置数据库资源信息
+spring:
+  datasource:
+    # MySQL 配置（业务数据库）
+    mysql:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: "${QIO_MYSQL_URL:jdbc:mysql://localhost:3306/ai-agent-station?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}"
+      username: "${QIO_MYSQL_USERNAME:root}"
+      password: "${QIO_MYSQL_PASSWORD:}"
+      hikari:
+        pool-name: Retail_HikariCP
+        maximum-pool-size: 10
+        minimum-idle: 5
+        idle-timeout: 30000
+        connection-timeout: 30000
+        max-lifetime: 1800000
+        auto-commit: true
+        connection-test-query: SELECT 1
+    # PostgreSQL 配置（向量数据库）
+    pgvector:
+      driver-class-name: org.postgresql.Driver
+      url: "${QIO_PGVECTOR_URL:jdbc:postgresql://localhost:5432/ai-rag-knowledge?tcpKeepAlive=true&socketTimeout=60}"
+      username: "${QIO_PGVECTOR_USERNAME:postgres}"
+      password: "${QIO_PGVECTOR_PASSWORD:}"
+      hikari:
+        pool-name: PgVectorHikariPool
+        maximum-pool-size: 5
+        minimum-idle: 2
+        idle-timeout: 600000  # 改为 10 分钟（600000ms），避免空闲连接被断开
+        connection-timeout: 30000
+        max-lifetime: 1800000  # 30 分钟
+        auto-commit: true
+        connection-test-query: SELECT 1
+        validation-timeout: 5000  # 连接验证超时
+        leak-detection-threshold: 60000  # 连接泄漏检测阈值（60秒）
+  # Redis 配置
+  data:
+    redis:
+      host: "${QIO_REDIS_HOST:localhost}"
+      port: "${QIO_REDIS_PORT:6379}"
+      password: "${QIO_REDIS_PASSWORD:}"
+      timeout: 3000
+      database: 0
+  ai:
+    openai:
+      base-url: "${QIO_OPENAI_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode}"  # 阿里百炼兼容接口，不包含 /v1
+      api-key: "${QIO_OPENAI_API_KEY:}"
+      embedding:
+        options:
+          model: text-embedding-v4
+          dimensions: 1536  # 显式指定维度为 1536，与数据库表 vector_store_openai 的 VECTOR(1536) 定义一致
+    agent:
+      auto-config:
+        enabled: true
+    # 禁用 PgVectorStore 自动配置，使用手动配置的 Bean（使用 vector_store_openai 表）
+    vectorstore:
+      pgvector:
+        enabled: false
+
+# MyBatis 配置【如需使用记得打开】
+mybatis:
+ mapper-locations: classpath:/mybatis/mapper/*.xml
+ config-location:  classpath:/mybatis/config/mybatis-config.xml
+
+# 日志
+logging:
+  level:
+    root: info
+  config: classpath:logback-spring.xml
