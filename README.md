@@ -20,7 +20,10 @@
 平台还引入了智能交互能力作为支撑，使 AI 能够在不同文化语境下参与用户的创作与交流，在情感引导、文化背景补充与内容辅助等方面提供恰当支持，提升整体互动的连贯性与沉浸感。同时，该能力也被应用于平台的管理端，用于辅助内容整理与日常运营，让使平台在保持文化温度的同时更加高效、灵活。
 <p align = "right">—— 五灵威力小队</p>
 
-**技术栈**：***JavaScript、Vue2、Vue Router、Pinia、Canvas、Element UI、Webpack、ESLint、Axios***
+**v1.0.0 技术栈**
+
+- **前端**：JavaScript、Vue 2、Vue Router、Pinia、Vuex、Element UI、AVue、Canvas API、Axios、Less、Vue CLI、Webpack、ESLint
+- **后端**：Java 17、Spring Boot 3、MyBatis-Plus、MySQL、Redis、RabbitMQ、MinIO、JWT、Knife4j、Maven
 
 ## **在线体验**
 
