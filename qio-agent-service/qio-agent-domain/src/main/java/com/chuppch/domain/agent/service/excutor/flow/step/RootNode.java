@@ -4,6 +4,7 @@ import cn.bugstack.wrench.design.framework.tree.StrategyHandler;
 import com.chuppch.domain.agent.model.entity.ExecuteCommandEntity;
 import com.chuppch.domain.agent.model.valobj.AiAgentClientFlowConfigVO;
 import com.chuppch.domain.agent.service.excutor.flow.step.factory.DefaultFlowAgentExecuteStrategyFactory;
+import com.chuppch.types.exception.BizException;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,9 @@ public class RootNode extends AbstractExecuteSupport{
         log.info("会话ID: {}", requestParameter.getSessionId());
 
         Map<String, AiAgentClientFlowConfigVO> aiAgentClientFlowConfigVOMap = repository.queryAiAgentClientFlowConfig(requestParameter.getAiAgentId());
+        if (aiAgentClientFlowConfigVOMap == null || aiAgentClientFlowConfigVOMap.isEmpty()) {
+            throw new BizException("AGENT_CLIENT_CONFIG_NOT_FOUND", "智能体缺少可执行的客户端流程配置");
+        }
 
         // 客户端对话组
         dynamicContext.setAiAgentClientFlowConfigVOMap(aiAgentClientFlowConfigVOMap);
@@ -38,7 +42,9 @@ public class RootNode extends AbstractExecuteSupport{
         // 当前任务信息
         dynamicContext.setCurrentTask(requestParameter.getMessage());
         // 最大任务步骤
-        dynamicContext.setMaxStep(requestParameter.getMaxStep());
+        if (requestParameter.getMaxStep() != null && requestParameter.getMaxStep() > 0) {
+            dynamicContext.setMaxStep(requestParameter.getMaxStep());
+        }
 
         return router(requestParameter, dynamicContext);
     }

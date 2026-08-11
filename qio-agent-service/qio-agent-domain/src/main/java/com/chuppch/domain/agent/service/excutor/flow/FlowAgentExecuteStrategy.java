@@ -20,6 +20,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter
 @Service
 public class FlowAgentExecuteStrategy implements IExecuteStrategy {
 
+    private static final int DEFAULT_MAX_STEP = 4;
+
     @Resource
     private DefaultFlowAgentExecuteStrategyFactory defaultFlowAgentExecuteStrategyFactory;
 
@@ -30,7 +32,10 @@ public class FlowAgentExecuteStrategy implements IExecuteStrategy {
 
         // 创建动态上下文并初始化必要字段
         DefaultFlowAgentExecuteStrategyFactory.DynamicContext dynamicContext = new DefaultFlowAgentExecuteStrategyFactory.DynamicContext();
-        dynamicContext.setMaxStep(executeCommandEntity.getMaxStep() != null ? executeCommandEntity.getMaxStep() : 4);
+        Integer requestedMaxStep = executeCommandEntity.getMaxStep();
+        dynamicContext.setMaxStep(requestedMaxStep != null && requestedMaxStep > 0
+                ? requestedMaxStep
+                : DEFAULT_MAX_STEP);
         dynamicContext.setExecutionHistory(new StringBuilder());
         dynamicContext.setCurrentTask(executeCommandEntity.getMessage());
         dynamicContext.setValue("emitter", emitter);

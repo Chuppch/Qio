@@ -21,6 +21,8 @@ import jakarta.annotation.Resource;
 @Service
 public class AutoAgentExecuteStrategy implements IExecuteStrategy {
 
+    private static final int DEFAULT_MAX_STEP = 3;
+
     @Resource
     private DefaultAutoAgentExecuteStrategyFactory defaultAutoAgentExecuteStrategyFactory;
 
@@ -30,7 +32,10 @@ public class AutoAgentExecuteStrategy implements IExecuteStrategy {
                 defaultAutoAgentExecuteStrategyFactory.armoryStrategyHandler();
 
         DefaultAutoAgentExecuteStrategyFactory.DynamicContext dynamicContext = new DefaultAutoAgentExecuteStrategyFactory.DynamicContext();
-        dynamicContext.setMaxStep(executeCommandEntity.getMaxStep() != null ? executeCommandEntity.getMaxStep() : 3);
+        Integer requestedMaxStep = executeCommandEntity.getMaxStep();
+        dynamicContext.setMaxStep(requestedMaxStep != null && requestedMaxStep > 0
+                ? requestedMaxStep
+                : DEFAULT_MAX_STEP);
         dynamicContext.setExecutionHistoryManager(new ExecutionHistoryManager());
         dynamicContext.setCurrentTask(executeCommandEntity.getMessage());
         dynamicContext.setValue("emitter", emitter);

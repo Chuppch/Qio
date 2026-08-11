@@ -1,8 +1,6 @@
 package com.chuppch.domain.agent.service;
 
-import com.chuppch.domain.agent.adapter.repository.IAgentRepository;
 import com.chuppch.domain.agent.model.valobj.AiAgentVO;
-import jakarta.annotation.Resource;
 
 import java.util.List;
 
@@ -17,7 +15,7 @@ public interface IArmoryService {
     List<AiAgentVO> acceptArmoryAllAvailableAgents();
 
     // 装配单个智能体
-    void acceptArmoryAgent(String agentId) throws Exception;
+    void acceptArmoryAgent(String agentId);
 
     // 查询所有可用的智能体
     List<AiAgentVO> queryAvailableAgents();

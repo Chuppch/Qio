@@ -23,19 +23,28 @@ public class BizException extends RuntimeException {
     /** 异常信息 */
     private String info;
 
-    public BizException(String code) {
-        this.code = code;
+    public BizException(String message) {
+        super(message);
+        this.code = "BUSINESS_ERROR";
+        this.info = message;
     }
 
-    public BizException(String code, Throwable cause) {
-        this.code = code;
-        super.initCause(cause);
+    public BizException(String message, Throwable cause) {
+        super(message, cause);
+        this.code = "BUSINESS_ERROR";
+        this.info = message;
     }
 
-    public BizException(String code, String message,Throwable  cause) {
+    public BizException(String code, String message) {
+        super(message);
         this.code = code;
         this.info = message;
-        super.initCause(cause);
+    }
+
+    public BizException(String code, String message, Throwable cause) {
+        super(message, cause);
+        this.code = code;
+        this.info = message;
     }
 
     @Override

@@ -7,12 +7,14 @@ import com.chuppch.domain.agent.model.valobj.AiAgentClientFlowConfigVO;
 import com.chuppch.domain.agent.model.valobj.enums.AiClientTypeEnumVO;
 import com.chuppch.domain.agent.service.excutor.auto.step.factory.DefaultAutoAgentExecuteStrategyFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.stereotype.Service;
 
 /**
  * @author chuppch
  * @description
  * @create 2025/12/19
  */
+@Service("step2PrecisionExecutorNode")
 public class Step2PrecisionExecutorNode extends AbstractExecuteSupport {
     @Override
     protected String doApply(ExecuteCommandEntity requestParameter, DefaultAutoAgentExecuteStrategyFactory.DynamicContext dynamicContext) throws Exception {
