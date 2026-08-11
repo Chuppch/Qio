@@ -352,13 +352,20 @@ Agent Console 的 `build`、`test` 等部分 npm scripts 当前只是占位命�
 - 禁止 `Co-authored-by` / `Co-Authored-By` 等其他 co-author trailer
 - 提交前先看 `git status --short`，据此判断走单条提交还是分批提交
 
+本项目额外约定（在技能的「推荐写法」之上收紧为强制要求）：
+
+- subject 与 body 一律使用英文，不使用中文
+- subject 使用祈使语气，如 `add` / `fix` / `document` / `move`，不用第三人称或过去式
+- subject 简短明确，`scope` 使用目录或模块短名，如 `backend-v2`、`agent-service`、`agents`
+- 历史提交中存在中文 subject，属于此约定生效前的遗留，不回溯修改
+
 示例：
 
 ```text
-:tada: (backend-v2) 初始化 Go 项目骨架
+:tada: (backend-v2) init go project scaffold
 
-- 建立 transport / app / domain / infra 四层目录与依赖方向
-- 按 v1 Controller 划分业务域与对应处理器
+- add transport / app / domain / infra layers with dependency direction
+- split business domains by v1 controllers
 
 AI-Co-Authored-By: Kiro
 ```
