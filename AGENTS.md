@@ -26,7 +26,7 @@ Qio 是基于原 Qiaopi v1.x 的第二次全面迭代升级（v2.0.0），在保
 
 | v1 | v2 |
 |----|-----|
-| Spring Boot 3.3.3 | Gin (Go 1.22+) |
+| Spring Boot 3.3.3 | Gin (Go 1.26+) |
 | MyBatis-Plus | GORM |
 | Druid 连接池 | database/sql 内置连接池 |
 | Spring Data Redis | go-redis |
@@ -131,7 +131,7 @@ domain/<域>/
 
 - `internal/transport/http` 的包名与标准库 `net/http` 同名，外部包同时引用两者时需要起别名。
 - `config/` 下只有 `config.example.yaml` 入库，派生出的 `config.dev.yaml` 等已被忽略；敏感项优先用环境变量注入。
-- 开发机当前未安装 Go，`go build`、`gofmt`、`go vet` 都无法执行。涉及 Go 代码的改动如果没跑过编译，必须在结论中说明验证受限，不能只做静态判断就声称通过。
+- Go 工具链装在 `/opt/homebrew/bin`。如果 shell 报 `command not found: go`，先确认该路径在 `PATH` 中。
 
 ## Agent 智能中台
 
@@ -320,7 +320,7 @@ Agent Console 的 `build`、`test` 等部分 npm scripts 当前只是占位命�
 改动后至少执行与改动匹配的最小验证：
 
 - 前端页面/交互改动：优先运行开发服务器确认
-- 后端 v2（Go）改动：至少执行 `make build` 与 `make fmt`，有测试则跑 `make test`；开发机未装 Go 时如实说明无法编译验证，并给出安装后需补跑的命令
+- 后端 v2（Go）改动：至少执行 `make build` 与 `make fmt`，有测试则跑 `make test`
 - 后端接口改动：优先编译通过，有条件则跑测试
 - Agent Service 改动：至少执行对应 Maven 模块编译；涉及模型、数据库或 RAG 时说明所需外部依赖是否可用
 - Agent Console 改动：至少执行 `npm run lint` 并使用开发服务器验证；当前占位的 `npm run build`、`npm test` 不算有效验证
