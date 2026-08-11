@@ -335,10 +335,33 @@ Agent Console 的 `build`、`test` 等部分 npm scripts 当前只是占位命�
 
 ## 提交规范
 
-提交信息使用 cz-emoji shortcode 风格：
+提交信息使用 cz-emoji shortcode 风格。**提交前必须先读 `.agents/skills/emoji-commit/SKILL.md`**，以该技能及其 `references/` 下的文档为准。该技能未在 `.kiro/` 下建立软链，不会自动出现在可用技能列表中，需要主动按路径读取。
 
-- Header 格式：`:emoji: subject` 或 `:emoji: (scope) subject`
-- 如果仓库内 `emoji-commit` skill 可用，提交时优先参考该技能约定
+关键参考文件：
+
+- `.agents/skills/emoji-commit/SKILL.md` — 路由判断与最小硬约束
+- `.agents/skills/emoji-commit/references/fex-conventional-commits.md` — 完整 header / body / footer 规范
+- `.agents/skills/emoji-commit/references/cz-emoji-types.md` — emoji 类型对照表
+
+最小硬约束（细节仍以技能文档为准）：
+
+- Header 骨架：`:emoji: subject`、`:emoji: ! subject`、`:emoji: (scope) subject`、`:emoji: (scope) ! subject`
+- emoji 必须用 shortcode（如 `:bug:`），不得用 Unicode emoji；docs 类用 `:memo:`
+- body 可选，存在时用 bullet 风格，与 header 之间保留一个空行
+- `AI-Co-Authored-By:` 是必需 footer，且必须是提交信息的最后一行
+- 禁止 `Co-authored-by` / `Co-Authored-By` 等其他 co-author trailer
+- 提交前先看 `git status --short`，据此判断走单条提交还是分批提交
+
+示例：
+
+```text
+:tada: (backend-v2) 初始化 Go 项目骨架
+
+- 建立 transport / app / domain / infra 四层目录与依赖方向
+- 按 v1 Controller 划分业务域与对应处理器
+
+AI-Co-Authored-By: Kiro
+```
 
 ## 沟通输出
 
