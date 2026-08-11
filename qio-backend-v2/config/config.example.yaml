@@ -1,0 +1,55 @@
+# Qio 业务后端配置样例
+#
+# 使用方式：复制为 config.dev.yaml / config.prod.yaml 后填入实际值。
+# 派生出的配置文件已在 .gitignore 中排除，不要把真实凭据提交到仓库。
+# 敏感项建议留空，改由同名环境变量注入。
+
+server:
+  port: 8080
+  mode: "" # debug | release
+  read_timeout: 10s
+  write_timeout: 10s
+
+log:
+  level: "" # debug | info | warn | error
+  format: "" # text | json
+
+mysql:
+  host: ""
+  port: 3306
+  database: ""
+  username: ""
+  password: "" # 建议改用环境变量注入
+  max_open_conns: 0
+  max_idle_conns: 0
+  conn_max_lifetime: 1h
+
+redis:
+  addr: ""
+  password: "" # 建议改用环境变量注入
+  db: 0
+
+rabbitmq:
+  url: "" # 建议改用环境变量注入
+
+minio:
+  endpoint: ""
+  access_key: "" # 建议改用环境变量注入
+  secret_key: "" # 建议改用环境变量注入
+  bucket: ""
+  use_ssl: false
+
+mail:
+  host: ""
+  port: 465
+  username: ""
+  password: "" # 建议改用环境变量注入
+  nickname: ""
+
+jwt:
+  secret: "" # 建议改用环境变量注入
+  expires_in: 168h
+
+agent_service:
+  base_url: ""
+  timeout: 60s
