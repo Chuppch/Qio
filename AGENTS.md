@@ -44,6 +44,95 @@ Qio 是基于原 Qiaopi v1.x 的第二次全面迭代升级（v2.0.0），在保
 - RabbitMQ
 - Minio
 
+## 业务后端 v2（qio-backend-v2）
+
+Go module 路径为 `github.com/Chuppch/Qio/qio-backend-v2`。当前只完成目录骨架，尚无业务实现，全部 Go 文件都只有包声明与职责注释。
+
+### 目录结构
+
+```text
+qio-backend-v2/
+├── cmd/server/                启动入口：加载配置、组装依赖、启动服务
+├── internal/
+│   ├── transport/             入站传输层
+│   │   ├── http/              处理器与路由（router.go 集中注册）
+│   │   ├── middleware/        认证、跨域、日志、限流、恢复
+│   │   └── dto/               对外接口契约（Request / Response）
+│   ├── app/                   跨域用例编排（一个用例一个文件）
+│   ├── domain/                业务域，不依赖 Web 框架与存储实现
+│   │   ├── user/ letter/ bottle/ friend/ shop/ explore/ ai/
+│   │   └── port/              跨域能力接口（notification、storage）
+│   ├── infra/                 基础设施实现
+│   │   └── mysql/ redis/ rabbitmq/ minio/ mail/ agentsvc/
+│   └── config/                配置结构与加载
+├── pkg/response/              统一响应结构
+├── config/                    配置文件（仅样例入库）
+└── migrations/                数据库迁移脚本
+```
+
+### 分层与依赖方向
+
+```text
+transport ──> app ──> domain <── infra
+     │                  ▲
+     └──────────────────┘
+        （单域动作可直接调用域 service）
+```
+
+- `internal/domain/**` 不得引用 `internal/transport/**`、`internal/app/**`、`internal/infra/**`。
+- `domain` 只声明接口：域内数据访问放各域 `repository.go`，跨域出站能力放 `domain/port/`；实现一律在 `infra`。
+- 跨多个域的业务动作放 `internal/app`，不塞进某一个域的 service。
+- `transport` 只做协议转换、参数校验、错误码映射，不写业务规则；DTO 与领域模型的转换在 `transport/http` 内完成。
+- 目录约定目前没有编译期强制。如需强制，在 `golangci-lint` 中加 depguard 规则，而不是靠加深目录层级。
+
+### 域内文件约定
+
+```text
+domain/<域>/
+├── doc.go          包说明
+├── service.go      业务逻辑
+├── repository.go   数据访问接口定义
+└── model.go        领域模型
+```
+
+- 接口多且主题分组明显时，按主题拆成 `service_auth.go`、`service_task.go` 等；同一域所有文件共享同一个 package，不新建子目录。
+- 域复杂到单目录难以维护时，再在域内拆 `application/` 等子包，不提前分层。
+- `transport/http` 与 `transport/dto` 同样按域一个文件，与业务域一一对应。
+
+### v1 模块归属
+
+| v1 Controller | v2 处理器 | v2 业务域 |
+|---------------|-----------|-----------|
+| `UserController` | `transport/http/user.go` | `domain/user`、`domain/friend` |
+| `LetterController` | `transport/http/letter.go` | `domain/letter` |
+| `BottleController` | `transport/http/bottle.go`、`friend.go` | `domain/bottle`、`domain/friend` |
+| `QuestionController`、`GameController` | `transport/http/explore.go` | `domain/explore` |
+| `FontController`、`PaperController`、`CardController`、`MarketingController` | `transport/http/shop.go` | `domain/shop` |
+| `CommonController`（上传） | `transport/http/upload.go` | `domain/port/storage` |
+| `ChatService` | `transport/http/ai.go` | `domain/ai` |
+
+### 与 Agent Service 的结构映射
+
+两个后端保持同构分层，便于在项目间切换：
+
+| qio-agent-service | qio-backend-v2 |
+|-------------------|----------------|
+| `qio-agent-trigger/http/` | `internal/transport/http/` |
+| `qio-agent-api/dto/` | `internal/transport/dto/` |
+| `qio-agent-domain/` | `internal/domain/` |
+| `qio-agent-domain/adapter/port/` | `internal/domain/port/` |
+| `qio-agent-infrastructure/` | `internal/infra/` |
+| `qio-agent-app/` | `cmd/server/` |
+| `qio-agent-types/` | 不设；错误定义与常量归属各自的域或功能包 |
+
+不要在 Go 侧新建 `types`、`utils`、`common`、`helpers` 这类无语义包。
+
+### 注意事项
+
+- `internal/transport/http` 的包名与标准库 `net/http` 同名，外部包同时引用两者时需要起别名。
+- `config/` 下只有 `config.example.yaml` 入库，派生出的 `config.dev.yaml` 等已被忽略；敏感项优先用环境变量注入。
+- 开发机当前未安装 Go，`go build`、`gofmt`、`go vet` 都无法执行。涉及 Go 代码的改动如果没跑过编译，必须在结论中说明验证受限，不能只做静态判断就声称通过。
+
 ## Agent 智能中台
 
 侨缘信使的 Agent 能力由一套独立的中台服务提供，整套能力统称为 **Qio Agent Platform（侨缘信使智能中台）**。它不是另一个面向用户的产品，而是为 Qio 主站提供写信辅助、文化知识问答、RAG 检索、多语言处理、内容运营和工具调用能力。
@@ -118,10 +207,16 @@ Agent Console 的 `build`、`test` 等部分 npm scripts 当前只是占位命�
 
 ## 常用命令
 
-- 前端安装依赖：`cd qio-frontend && npm install`
-- 前端本地开发：`cd qio-frontend && npm run serve`
-- 前端生产构建：`cd qio-frontend && npm run build`
-- 后端编译运行：待 Go 项目初始化后补充
+- 前端 v1 安装依赖：`cd qio-frontend && npm install`
+- 前端 v1 本地开发：`cd qio-frontend && npm run serve`
+- 前端 v1 生产构建：`cd qio-frontend && npm run build`
+- 前端 v2：尚未初始化
+- 后端 v2 整理依赖：`cd qio-backend-v2 && make tidy`
+- 后端 v2 编译：`cd qio-backend-v2 && make build`
+- 后端 v2 本地启动：`cd qio-backend-v2 && make run`
+- 后端 v2 格式化与静态检查：`cd qio-backend-v2 && make fmt && make vet`
+- 后端 v2 测试：`cd qio-backend-v2 && make test`
+- 后端 v2 全部命令：`cd qio-backend-v2 && make help`
 - Agent Service 编译：`cd qio-agent-service && mvn clean package -DskipTests`
 - Agent Service 本地启动：`cd qio-agent-service && mvn -pl qio-agent-app -am spring-boot:run`
 - Agent Console 安装依赖：`cd qio-agent-console && npm install`
@@ -132,12 +227,14 @@ Agent Console 的 `build`、`test` 等部分 npm scripts 当前只是占位命�
 
 优先编辑这些目录或文件：
 
-- `qio-frontend/src/` — 前端源码
-- `qio-backend/` — 后端源码
+- `qio-backend-v2/` — v2 业务后端源码（Go）
+- `qio-frontend-v2/` — v2 前端源码（Next.js，尚未初始化）
 - `qio-agent-service/` — Agent 中台后端源码
 - `qio-agent-console/src/` — Agent 中台管理端源码
 - `docs/` — 项目文档
 - `AGENTS.md` — 协作规范
+
+`qio-backend/` 与 `qio-frontend/` 是 v1 遗留实现，作为迁移参照保留。除明确的 v1 修复任务外，不在其中新增功能。
 
 请注意以下边界：
 
@@ -165,7 +262,12 @@ Agent Console 的 `build`、`test` 等部分 npm scripts 当前只是占位命�
 - 遵循 Go 官方格式化（gofmt / goimports）
 - 命名遵循 Go 惯例（驼峰导出、小写私有）
 - 错误处理显式 `if err != nil` 检查，不吞错误
-- 项目结构待初始化后补充
+- 包按业务域或功能命名，禁止 `types`、`utils`、`common`、`helpers`、`base` 这类无语义包名
+- 目录层级保持浅，一到两层为宜，不做 `internal/services/user/handlers/http/v1/` 这类嵌套
+- 每个包用 `doc.go` 承载包注释，说明职责与文件约定，作用等同于 Java 的 `package-info.java`
+- 接口在使用方一侧声明，实现放 `internal/infra`；不在 `domain` 内 import 具体存储或 Web 框架
+- 同一个 struct 的方法可分散在多个文件，按业务主题拆分，避免出现 v1 那种巨型 Service
+- 详细分层与依赖方向见「业务后端 v2」章节
 
 ### Agent Service（Java）
 
@@ -205,11 +307,20 @@ Agent Console 的 `build`、`test` 等部分 npm scripts 当前只是占位命�
 - 只有高风险操作才需要确认（删除数据、覆盖大量文件、影响生产配置）
 - 普通读文件、改代码、运行本地命令可直接执行
 
+### 项目演进日志
+
+- `PROJECT_LOG.md` 是仓库级项目演进记录。Agent 在开始跨项目或完整功能迭代前，应先阅读其中与当前任务相关的记录，避免基于过时的项目边界或方案继续开发。
+- 只有当一次完整功能迭代已经实现并完成必要验证时，才在 `PROJECT_LOG.md` 追加记录。完整功能迭代是指形成了可独立说明的业务能力、端到端流程、架构调整、接口协议或数据迁移结果，而不是单个文件或单次代码修改。
+- 普通缺陷修复、空值判断、格式调整、局部重构、依赖升级、文件重命名、探索分析、代码评审以及尚未完成的中间步骤，不要求更新 `PROJECT_LOG.md`。
+- 日志记录应简洁说明日期、状态、背景、最终实现、跨项目影响、验证结果和必要的后续工作；不要逐条复制提交记录，也不要写入密钥、密码或私人数据。
+- 如果一次迭代改变了之前的方案，应追加新记录说明变更原因和新结论，不覆盖或改写原有历史记录。
+
 ## 验证要求
 
 改动后至少执行与改动匹配的最小验证：
 
 - 前端页面/交互改动：优先运行开发服务器确认
+- 后端 v2（Go）改动：至少执行 `make build` 与 `make fmt`，有测试则跑 `make test`；开发机未装 Go 时如实说明无法编译验证，并给出安装后需补跑的命令
 - 后端接口改动：优先编译通过，有条件则跑测试
 - Agent Service 改动：至少执行对应 Maven 模块编译；涉及模型、数据库或 RAG 时说明所需外部依赖是否可用
 - Agent Console 改动：至少执行 `npm run lint` 并使用开发服务器验证；当前占位的 `npm run build`、`npm test` 不算有效验证
