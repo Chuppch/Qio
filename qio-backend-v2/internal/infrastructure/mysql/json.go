@@ -54,6 +54,21 @@ func decodeAddressList(raw []byte) []addressJSON {
 	return out
 }
 
+// decodeAddress 解析单个地址列，用于 bottle.sender_address 与
+// friend_request.give_address 这类存单对象的列。
+//
+// 列为 NULL 或格式非法时返回零值，视作「未填写地址」。
+func decodeAddress(raw []byte) addressJSON {
+	if len(raw) == 0 {
+		return addressJSON{}
+	}
+	var out addressJSON
+	if err := json.Unmarshal(raw, &out); err != nil {
+		return addressJSON{}
+	}
+	return out
+}
+
 // decodeOwnedItemList 解析道具数组列，语义同 decodeAddressList。
 func decodeOwnedItemList(raw []byte) []ownedItemJSON {
 	if len(raw) == 0 {
