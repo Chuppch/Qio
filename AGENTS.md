@@ -46,23 +46,23 @@ Qio 是基于原 Qiaopi v1.x 的第二次全面迭代升级（v2.0.0），在保
 
 ## 业务后端 v2（qio-backend-v2）
 
-Go module 路径为 `github.com/Chuppch/Qio/qio-backend-v2`。当前只完成目录骨架，尚无业务实现，全部 Go 文件都只有包声明与职责注释。
+Go module 路径为 `github.com/Chuppch/Qio/qio-backend-v2`。后端采用与 Agent Service 语义相近的四层结构：`trigger`、`app`、`domain`、`infrastructure`。当前 `user`、`dict` 已开始实现领域模型与存储适配，其余业务域仍以迁移骨架和渐进实现为主。
 
 ### 目录结构
 
 ```text
 qio-backend-v2/
-├── cmd/server/                启动入口：加载配置、组装依赖、启动服务
+├── cmd/server/                Composition Root：加载配置、组装依赖、启动服务
 ├── internal/
-│   ├── transport/             入站传输层
-│   │   ├── http/              处理器与路由（router.go 集中注册）
+│   ├── trigger/               入站触发层，对应 Agent Service 的 trigger
+│   │   ├── http/              Handler 与路由（router.go 集中注册）
 │   │   ├── middleware/        认证、跨域、日志、限流、恢复
-│   │   └── dto/               对外接口契约（Request / Response）
-│   ├── app/                   跨域用例编排（一个用例一个文件）
-│   ├── domain/                业务域，不依赖 Web 框架与存储实现
+│   │   └── dto/               HTTP Request / Response 契约
+│   ├── app/                   Application 层，按完整业务用例编排
+│   ├── domain/                领域层，不依赖 Web 框架与存储实现
 │   │   ├── user/ letter/ bottle/ friend/ shop/ explore/ ai/
 │   │   └── port/              跨域能力接口（notification、storage）
-│   ├── infra/                 基础设施实现
+│   ├── infrastructure/        出站适配与基础设施实现
 │   │   └── mysql/ redis/ rabbitmq/ minio/ mail/ agentsvc/
 │   └── config/                配置结构与加载
 ├── pkg/response/              统一响应结构
@@ -73,43 +73,91 @@ qio-backend-v2/
 ### 分层与依赖方向
 
 ```text
-transport ──> app ──> domain <── infra
-     │                  ▲
-     └──────────────────┘
-        （单域动作可直接调用域 service）
+HTTP / Job / Event
+       │
+       ▼
+    trigger ──> app ──> domain <── infrastructure
+                  ▲                    │
+                  └──── cmd/server ────┘
+                         仅负责装配
 ```
 
-- `internal/domain/**` 不得引用 `internal/transport/**`、`internal/app/**`、`internal/infra/**`。
-- `domain` 只声明接口：域内数据访问放各域 `repository.go`，跨域出站能力放 `domain/port/`；实现一律在 `infra`。
-- 跨多个域的业务动作放 `internal/app`，不塞进某一个域的 service。
-- `transport` 只做协议转换、参数校验、错误码映射，不写业务规则；DTO 与领域模型的转换在 `transport/http` 内完成。
-- 目录约定目前没有编译期强制。如需强制，在 `golangci-lint` 中加 depguard 规则，而不是靠加深目录层级。
+- `trigger` 是入站适配层，只负责协议解析、基础参数校验、身份上下文提取、DTO 转换和错误码映射；不得编写业务规则、直接执行 SQL 或操作 Redis。
+- `app` 是 Application 层，表达一个完整用例，例如注册、登录、重置密码、发信、领取任务奖励。它负责协调领域服务、Repository、缓存、通知、鉴权和事务边界，但不保存 HTTP DTO，也不直接依赖 GORM、Redis Client 等实现类型。
+- `domain` 是核心业务层，包含聚合、实体、值对象、领域服务、业务错误及所需的 Repository/Port 接口。它不得引用 `trigger`、`app`、`infrastructure` 或具体框架。
+- `infrastructure` 是出站适配层，实现 `domain` 声明的 Repository 与 Port，负责 MySQL、Redis、RabbitMQ、Minio、邮件和 Agent Service 调用；它可以依赖 `domain`，业务层不得反向依赖它。
+- `cmd/server` 是 Composition Root，可以同时引用各层完成实例化与依赖注入，但只能放配置加载、资源初始化、路由注册、生命周期和优雅关闭，不得承载业务逻辑。
+- 正常请求必须走 `trigger -> app -> domain`。不要让 Handler 为了省一个用例文件而直接拼接多个 Repository；简单查询也应由 `app` 暴露清晰的查询用例，保持统一入口。
+- 目录约定目前没有编译期强制。如需强制，在 `golangci-lint` 中增加 `depguard` 规则，不通过继续加深目录层级解决。
+
+### 各层文件组织
+
+Application 层按业务域建立目录，同一个 `Service` 的方法可以分散在多个用例文件中：
+
+```text
+app/user/
+├── service.go            依赖集合与构造函数
+├── register.go           注册用例
+├── login.go              登录用例
+├── reset_password.go     重置密码用例
+├── update_profile.go     更新资料用例
+├── address.go            地址簿用例
+└── growth.go             签到与任务用例
+```
+
+- 不为每个文件重复创建 `RegisterService`、`LoginService` 等空壳类型；优先让同一业务域共享一个应用服务及其依赖。
+- 用例文件按业务意图命名，不按 Controller 方法或数据库表命名。
+- 跨域用例仍归最主要的业务意图，例如“发信”放 `app/letter/send.go`，内部协调用户扣费、信件存储和通知。
 
 ### 域内文件约定
 
 ```text
 domain/<域>/
 ├── doc.go          包说明
-├── service.go      业务逻辑
-├── repository.go   数据访问接口定义
-└── model.go        领域模型
+├── model.go        聚合、实体和值对象
+├── service.go      不依赖基础设施的领域规则
+├── repository.go   该领域所需的数据访问接口
+├── errors.go       可由上层识别的领域错误
+└── validation.go   纯校验规则（确有需要时）
 ```
 
 - 接口多且主题分组明显时，按主题拆成 `service_auth.go`、`service_task.go` 等；同一域所有文件共享同一个 package，不新建子目录。
-- 域复杂到单目录难以维护时，再在域内拆 `application/` 等子包，不提前分层。
-- `transport/http` 与 `transport/dto` 同样按域一个文件，与业务域一一对应。
+- `repository.go` 只声明业务需要的接口，不出现 GORM Model、Redis Key 或 SQL 参数。
+- `trigger/http` 与 `trigger/dto` 按业务域一一对应；Handler 不复用数据库 PO 作为响应 DTO。
+
+基础设施当前按技术实现组织，并通过文件前缀区分持久化对象和仓储实现：
+
+```text
+infrastructure/
+├── mysql/
+│   ├── db.go              连接与连接池
+│   ├── po_user.go         user 表映射及 PO/Domain 转换
+│   ├── repo_user.go       user.Repository 的 MySQL 实现
+│   ├── po_<domain>.go     其他领域的持久化对象
+│   └── repo_<domain>.go   其他领域的 Repository 实现
+├── redis/
+│   ├── client.go
+│   ├── user_verify_repo.go
+│   └── user_task_repo.go
+└── agentsvc/ mail/ minio/ rabbitmq/
+```
+
+- PO 只存在于 `infrastructure/mysql`，不得流入 `domain`、`app` 或 `trigger`。
+- Repository 实现负责 PO 与领域模型转换，并把 GORM/Redis 错误翻译成领域错误或带上下文的基础设施错误。
+- 一个 Repository 面向一个聚合或明确的查询能力，而不是机械地“一张表一个 Repository”。
+- SQL、GORM 条件、Redis Key 和第三方 SDK 只允许出现在 `infrastructure`。
 
 ### v1 模块归属
 
 | v1 Controller | v2 处理器 | v2 业务域 |
 |---------------|-----------|-----------|
-| `UserController` | `transport/http/user.go` | `domain/user`、`domain/friend` |
-| `LetterController` | `transport/http/letter.go` | `domain/letter` |
-| `BottleController` | `transport/http/bottle.go`、`friend.go` | `domain/bottle`、`domain/friend` |
-| `QuestionController`、`GameController` | `transport/http/explore.go` | `domain/explore` |
-| `FontController`、`PaperController`、`CardController`、`MarketingController` | `transport/http/shop.go` | `domain/shop` |
-| `CommonController`（上传） | `transport/http/upload.go` | `domain/port/storage` |
-| `ChatService` | `transport/http/ai.go` | `domain/ai` |
+| `UserController` | `trigger/http/user.go` | `app/user`、`domain/user`、`domain/friend` |
+| `LetterController` | `trigger/http/letter.go` | `app/letter`、`domain/letter` |
+| `BottleController` | `trigger/http/bottle.go`、`friend.go` | `app/bottle`、`domain/bottle`、`domain/friend` |
+| `QuestionController`、`GameController` | `trigger/http/explore.go` | `app/explore`、`domain/explore` |
+| `FontController`、`PaperController`、`CardController`、`MarketingController` | `trigger/http/shop.go` | `app/shop`、`domain/shop` |
+| `CommonController`（上传） | `trigger/http/upload.go` | 对应用例、`domain/port/storage` |
+| `ChatService` | `trigger/http/ai.go` | `app/ai`、`domain/ai` |
 
 ### 与 Agent Service 的结构映射
 
@@ -117,19 +165,20 @@ domain/<域>/
 
 | qio-agent-service | qio-backend-v2 |
 |-------------------|----------------|
-| `qio-agent-trigger/http/` | `internal/transport/http/` |
-| `qio-agent-api/dto/` | `internal/transport/dto/` |
+| `qio-agent-trigger/http/` | `internal/trigger/http/` |
+| `qio-agent-api/dto/` | `internal/trigger/dto/` |
 | `qio-agent-domain/` | `internal/domain/` |
 | `qio-agent-domain/adapter/port/` | `internal/domain/port/` |
-| `qio-agent-infrastructure/` | `internal/infra/` |
+| Agent Domain 的用例/服务编排 | `internal/app/` |
+| `qio-agent-infrastructure/` | `internal/infrastructure/` |
 | `qio-agent-app/` | `cmd/server/` |
 | `qio-agent-types/` | 不设；错误定义与常量归属各自的域或功能包 |
 
-不要在 Go 侧新建 `types`、`utils`、`common`、`helpers` 这类无语义包。
+这里统一的是模块职责和语言，而不是照搬 Java 的目录深度。Go 侧保持浅目录；不要新建 `types`、`utils`、`common`、`helpers` 这类无语义包。
 
 ### 注意事项
 
-- `internal/transport/http` 的包名与标准库 `net/http` 同名，外部包同时引用两者时需要起别名。
+- `internal/trigger/http` 的包名与标准库 `net/http` 同名，外部包同时引用两者时需要起别名。
 - `config/` 下只有 `config.example.yaml` 入库，派生出的 `config.dev.yaml` 等已被忽略；敏感项优先用环境变量注入。
 - Go 工具链装在 `/opt/homebrew/bin`。如果 shell 报 `command not found: go`，先确认该路径在 `PATH` 中。
 
@@ -265,7 +314,7 @@ Agent Console 的 `build`、`test` 等部分 npm scripts 当前只是占位命�
 - 包按业务域或功能命名，禁止 `types`、`utils`、`common`、`helpers`、`base` 这类无语义包名
 - 目录层级保持浅，一到两层为宜，不做 `internal/services/user/handlers/http/v1/` 这类嵌套
 - 每个包用 `doc.go` 承载包注释，说明职责与文件约定，作用等同于 Java 的 `package-info.java`
-- 接口在使用方一侧声明，实现放 `internal/infra`；不在 `domain` 内 import 具体存储或 Web 框架
+- 接口在使用方一侧声明，实现放 `internal/infrastructure`；不在 `domain` 内 import 具体存储或 Web 框架
 - 同一个 struct 的方法可分散在多个文件，按业务主题拆分，避免出现 v1 那种巨型 Service
 - 详细分层与依赖方向见「业务后端 v2」章节
 
@@ -364,7 +413,7 @@ Agent Console 的 `build`、`test` 等部分 npm scripts 当前只是占位命�
 ```text
 :tada: (backend-v2) init go project scaffold
 
-- add transport / app / domain / infra layers with dependency direction
+- add trigger / app / domain / infrastructure layers with dependency direction
 - split business domains by v1 controllers
 
 AI-Co-Authored-By: Kiro
