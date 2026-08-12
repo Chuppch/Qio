@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Repository 是用户账号的数据访问接口，实现由 internal/infra/mysql 提供。
+// Repository 是用户账号的数据访问接口，实现由 internal/infrastructure/mysql 提供。
 //
 // 方法集覆盖 v1 UserServiceImpl 中对 userMapper 的全部调用场景。
 type Repository interface {
@@ -45,7 +45,7 @@ type Repository interface {
 	UsernameTaken(ctx context.Context, username string) (bool, error)
 }
 
-// VerifyCodeRepository 是验证码的读写接口，实现由 internal/infra/redis 提供。
+// VerifyCodeRepository 是验证码的读写接口，实现由 internal/infrastructure/redis 提供。
 //
 // 覆盖三种验证码：登录图形验证码（键为随机 uuid）、注册邮箱验证码与重置密码
 // 邮箱验证码（键为邮箱地址）。v1 中三者共用同一套裸键，v2 由实现层负责加前缀
@@ -72,7 +72,7 @@ type VerifyCodeRepository interface {
 
 // TaskRepository 是每日任务与签到的数据访问接口。
 //
-// 实现落在 internal/infra/redis：任务配置与签到记录在 v1 中都存于 Redis，
+// 实现落在 internal/infrastructure/redis：任务配置与签到记录在 v1 中都存于 Redis，
 // 没有对应数据表。
 type TaskRepository interface {
 	// ListTasks 返回指定用户在指定日期的任务及其完成状态。

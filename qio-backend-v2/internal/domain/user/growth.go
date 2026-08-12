@@ -6,7 +6,7 @@ package user
 // 能被单独加载和保存，因此不放在 model.go 中。
 //
 // 两者在 v1 均无持久化表：任务模板与完成状态在 Redis，签到奖励由运营配置，
-// 仓储实现见 internal/infra/redis。
+// 仓储实现见 internal/infrastructure/redis。
 
 // TaskStatus 是每日任务的完成状态。
 type TaskStatus int
