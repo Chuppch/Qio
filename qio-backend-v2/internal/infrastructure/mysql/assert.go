@@ -4,6 +4,7 @@ import (
 	"github.com/Chuppch/Qio/qio-backend-v2/internal/domain/bottle"
 	"github.com/Chuppch/Qio/qio-backend-v2/internal/domain/dict"
 	"github.com/Chuppch/Qio/qio-backend-v2/internal/domain/explore"
+	"github.com/Chuppch/Qio/qio-backend-v2/internal/domain/friend"
 	"github.com/Chuppch/Qio/qio-backend-v2/internal/domain/shop"
 	"github.com/Chuppch/Qio/qio-backend-v2/internal/domain/user"
 )
@@ -17,4 +18,5 @@ var (
 	_ shop.Repository    = (*shopRepository)(nil)
 	_ bottle.Repository  = (*bottleRepository)(nil)
 	_ explore.Repository = (*exploreRepository)(nil)
+	_ friend.Repository  = (*friendRepository)(nil)
 )

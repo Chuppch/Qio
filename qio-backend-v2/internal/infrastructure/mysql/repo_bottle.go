@@ -52,8 +52,13 @@ func (r *bottleRepository) FindByID(ctx context.Context, id int64) (*bottle.Bott
 // 条件与 v1 的 getNotIsPickedBottles 一致：未被捞起、非本人投放、非本人捞过。
 // update_user 在表中是 varchar，因此比较时把用户 ID 转成字符串。
 //
+// v1 用 notIn 生成 `NOT IN (?)`，MySQL 三值逻辑下该条件对 NULL 行求值为 NULL，
+// 因此 user_id 或 update_user 为 NULL 的行会被排除。`<> ?` 与之等价，
+// 这里照搬该语义，不额外放行 NULL 行——判断这属于 v1 的数据缺陷而非迁移问题，
+// 记录在 docs/TODO-migration.md。
+//
 // 沿用 v1 的做法全量取出，由 service 随机选一个。数据量增长后应改为
-// ORDER BY RAND() LIMIT 1 或按主键区间随机，记录在 docs/TODO-migration.md。
+// ORDER BY RAND() LIMIT 1 或按主键区间随机，同样记录在 docs/TODO-migration.md。
 func (r *bottleRepository) ListAvailable(ctx context.Context, userID int64) ([]*bottle.Bottle, error) {
 	uid := strconv.FormatInt(userID, 10)
 
@@ -61,7 +66,7 @@ func (r *bottleRepository) ListAvailable(ctx context.Context, userID int64) ([]*
 	err := r.db.WithContext(ctx).
 		Where("is_picked = ?", false).
 		Where("user_id <> ?", userID).
-		Where("update_user IS NULL OR update_user <> ?", uid).
+		Where("update_user <> ?", uid).
 		Find(&pos).Error
 	if err != nil {
 		return nil, fmt.Errorf("list available bottles: %w", err)

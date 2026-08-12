@@ -112,25 +112,56 @@
   随机选择留在 service
 - **建议**：改为 `ORDER BY RAND() LIMIT 1`，或按主键区间随机定位
 
-### 4.2 `ListAvailable` 对 NULL 的处理待确认
+### 4.2 可捞漂流瓶查询会排除 NULL 行
 
-- **位置**：`mysql/repo_bottle.go` 的 `ListAvailable`
-- **v1 做法**：用 MyBatis-Plus 的 `notIn("update_user", ...)`，生成
-  `update_user NOT IN (...)`。MySQL 三值逻辑下该条件会**过滤掉** `update_user IS NULL`
-  的行，即从未被捞过的瓶子反而捞不到
-- **v2 处置**：当前写成 `update_user IS NULL OR update_user <> ?`，
-  会把 NULL 行纳入结果——**这是行为改变，不是性能优化**
-- **待决策**：
-  - A：严格照搬 v1，只用 `update_user <> ?`
-  - B：保持现状，视 v1 为缺陷并在此处修正
-- **状态**：等待确认
+- **位置**：v1 `BottleServiceImpl.getNotIsPickedBottles`
+- **v1 做法**：
+  ```java
+  new LambdaQueryWrapper<Bottle>()
+      .eq(Bottle::isPicked, false)
+      .notIn(Bottle::getUserId, UserContext.getUserId())
+      .notIn(Bottle::getUpdateUser, UserContext.getUserId());
+  ```
+  两个 `notIn` 生成 `NOT IN (?)`。MySQL 三值逻辑下该条件对 NULL 行求值为 NULL，
+  因此 `user_id` 或 `update_user` 为 NULL 的瓶子会被**静默排除**，永远捞不到
+- **实际影响范围**：有限。`Bottle extends BaseEntity`，`update_user` 带
+  `@TableField(fill = FieldFill.INSERT_UPDATE)`，`insertFill` 在插入时会把它填成
+  投放者 ID，所以经应用投放的瓶子 `update_user` 不为 NULL。NULL 只出现在
+  非应用途径写入的数据里
+- **v2 处置**：照搬，用 `update_user <> ?`（与 `NOT IN (?)` 的 NULL 语义等价）。
+  判断这属于 v1 的数据逻辑缺陷，不是语言或架构层面的转换问题，因此不在等价迁移
+  阶段修正
+- **建议**：确认是否存在 `update_user IS NULL` 的存量行。若有，要么补数据、
+  要么把条件改为 `update_user IS NULL OR update_user <> ?`。
+  同时考虑给 bottle 表加「捞起者」独立列，不再复用审计列承载业务语义
 
 ### 4.3 查询方法内做写操作
 
-- **位置**：v1 `UserServiceImpl.getMyFriends`
-- **v1 做法**：名为 get 的查询方法内部执行了更新
-- **v2 处置**：`friend` 域尚未迁移
-- **建议**：迁移时把写操作剥离到独立方法，由调用方显式触发
+- **位置**：v1 `UserServiceImpl.getMyFriends`（L453–506）
+- **v1 做法**：方法末尾执行 `friendMapper.updateById(friendList)`，即一次读好友列表
+  会产生 N 条 `UPDATE friend`（N = 好友数）。原注释写着「这个更新虽然非必要更新，
+  但是为了保证数据的一致性，还是更新一下」
+- **附带问题**：
+  - 走 Redis 缓存命中分支时也会 update，即用缓存里可能过期的数据覆盖 MySQL
+  - 每次读都会刷新所有好友行的 `update_time`
+  - 方法无 `@Transactional`，N 条 UPDATE 不在事务内
+  - `UserServiceImpl:1092` 用 `getMyFriends(userId).size()` 取好友数，也会间接触发
+- **v2 处置**：`friend.Repository` 拆成 `ListByOwner`（只读）与 `UpdateAll`（只写）
+  两个方法，是否调用由 service 决定，仓储层不再隐含副作用。`UpdateAll` 额外包了
+  事务，这一点比 v1 强
+- **建议**：读路径不再调 `UpdateAll`。好友资料快照的刷新改为用户资料变更时反向推送
+
+### 4.4 好友表缺索引与唯一约束
+
+- **位置**：`friend`、`friend_request` 两张表
+- **现状**：`friend` 除主键外无任何索引，而 `owning_id`、`user_id` 是全部查询的
+  过滤条件；`friend_request` 的 `receiver_id`、`status` 同样无索引
+- **附带问题**：`friend` 没有 `(owning_id, user_id)` 唯一约束，加上 v1 的
+  `addFriend` 不查重，重复同意会插入重复好友行
+- **v2 处置**：`FindByUserAndOwner` 用 `First` 取第一条。存在重复记录时，
+  取到哪条取决于存储顺序，与 v1 `selectOne` 在重复时直接报错的行为不同
+- **建议**：补 `(owning_id, user_id)` 唯一索引与 `friend_request(receiver_id, status)`
+  联合索引，并先清理存量重复数据
 
 ---
 
@@ -171,7 +202,79 @@
   `userLoginPage`、`startAnswer`、`submitAnswers`、`allAnswerToFront`
 - **建议**：v1 侧直接删除
 
-### 5.5 信件版式常量命名与取值不符
+### 5.5 `FriendServiceImpl` 存在注释掉的死代码与不可达方法
+
+- **位置**：v1 `FriendServiceImpl` 第 53–94、110–121 行
+- **现状**：两个 `sendFriendRequest` 重载被 `/* */` 整段注释，其中各有一处
+  `friendRequestMapper.insert`。第二段的逻辑实际已搬到
+  `BottleServiceImpl.sendFriendRequest`，即「漂流瓶发好友申请」这一能力现在
+  归属 bottle 模块，不在 friend 模块
+- **附带问题**：`canCurrentUserOperateBottle`（L98–107）是活的方法定义，
+  但唯一调用点在注释块内，属于不可达代码
+- **v2 处置**：均未迁移。`friend.Repository` 的方法集只覆盖 16 处生效调用
+- **建议**：v1 侧直接删除
+
+### 5.6 好友申请的自动生成消息硬编码中文
+
+- **位置**：v1 `LetterServiceImpl.readLetter`（L1026）
+- **v1 做法**：`content` 直接拼中文字面量 `"!我给你写了一封侨批哦,快来加我为好友吧!"`，
+  未走 `MessageUtils.message`，与其余消息的国际化方式不一致
+- **v2 处置**：`friend` 域只迁移仓储层，该文案属于服务层，未迁移
+- **建议**：纳入 i18n 资源
+
+### 5.7 好友申请来源的判空逻辑语义混乱
+
+- **位置**：v1 `FriendServiceImpl.becomeFriend`（L180–195）
+- **v1 做法**：
+  ```java
+  Bottle bottle = new Bottle();
+  Letter letter = new Letter();
+  if (friendRequest.getBottleId() != null) { bottle = bottleMapper.selectById(...); ... }
+  else if (friendRequest.getLetterId() != null) { letter = letterMapper.selectById(...); ... }
+  if (bottle == null || letter == null) { throw ...; }
+  ```
+  两个变量都被初始化成空对象，只有走进对应分支被 `selectById` 覆盖后才可能为 null，
+  而判断用的是 `||`。看起来在做校验，实际只能拦住「走了某分支且查不到」这一种情况
+- **附带问题**：两个 ID 都为空时 `mineToFriendAddresses` 保持 null，会一路写进
+  `addresses` JSON 列
+- **v2 处置**：定义了 `friend.ErrSourceNotFound`，但取哪种语义由 service 决定，
+  仓储层不涉及
+- **建议**：明确为「来源 ID 必须有且仅有一个，且对应记录必须存在」
+
+### 5.8 `addFriend` 反向记录写错了头像与备注
+
+- **位置**：v1 `FriendServiceImpl.addFriend`（L263–264）
+- **v1 做法**：建立双向好友关系时，反向那条记录的 `avatar` 与 `remark` 取的是
+  `friend.getAvatar()` / `friend.getNickname()`，即**对方**的头像和昵称，
+  而不是同一行其他字段所用的 `myInfoOfUser`
+- **v2 处置**：`friend` 域只迁移仓储层，`addFriend` 属于服务层，未迁移
+- **建议**：迁移服务层时改为 `myInfoOfUser`，并确认是否需要修正存量数据
+
+### 5.9 `updateFriendRemark` 缺少归属校验
+
+- **位置**：v1 `UserServiceImpl.updateFriendRemark`（L844–852）
+- **v1 做法**：用 `selectById(friendId)` 取记录，**未校验 `owning_id` 等于当前用户**。
+  同文件的 `getFriendAddress`、`setFriendDefaultAddress`、`deleteFriendAddress`
+  都按 `(id, owning_id)` 查询，只有这一处漏了
+- **影响**：任何登录用户可以修改任意 friend 行的备注
+- **v2 处置**：`Repository` 同时提供 `FindByID` 与 `FindByIDAndOwner`，
+  并在 `Friend.OwnedBy` 上提供归属判定，但仓储层不强制
+- **建议**：服务层改用 `FindByIDAndOwner`，`FindByID` 只保留给确实不需要归属校验的场景
+
+### 5.10 审计字段自动填充会清空当前用户上下文
+
+- **位置**：v1 `MyMetaObjecthandler`（`Qiaopi-common`）
+- **v1 做法**：`insertFill` 与 `updateFill` 的末尾都调用 `UserContext.removeUserId()`，
+  即一次写操作之后当前线程的 userId 就没了
+- **影响**：写操作之后再取 `UserContext.getUserId()` 会得到 null。
+  `setFriendDefaultAddress`、`deleteFriendAddress`、`updateFriendRemark`
+  三处都在 `updateById` 之后用它拼缓存键，键实际变成 `...:null`，**缓存删不掉**
+- **v2 处置**：Go 侧不存在 ThreadLocal，审计字段由 PO 转换显式填入，
+  该问题自然消失。但需注意 v1 存量数据里 `update_user` 可能被写成 0
+- **建议**：无需处理，属迁移中自动修正项。若要核对存量数据，
+  注意 `update_user = 0` 的行不代表系统操作
+
+### 5.11 信件版式常量命名与取值不符
 
 - **位置**：v1 信件模块的 `letterType` 常量
 - **现状**：横排与竖排两个常量的名称与实际取值对应关系是反的
@@ -204,7 +307,25 @@
 - **建议**：抽到共享位置。注意 `Address` 是另一种情况——两域结构相同但语义不同
   （资料 vs 投递凭据），刻意不共享
 
-### 6.4 `questions` 表四个选项列
+### 6.4 `friend` 表的字段名与列名怪癖
+
+- **位置**：v1 `Friend.OwningId`
+- **现状**：Java 字段名首字母大写（`OwningId` 而非 `owningId`），
+  靠 Lombok 生成 `getOwningId()`、再由 MyBatis-Plus 驼峰转换推导出列名 `owning_id`。
+  能跑通但违反 Java 命名惯例
+- **v2 处置**：领域模型改名 `OwnerID`，PO 字段名 `OwningID` 并显式声明
+  `gorm:"column:owning_id"`，不依赖命名推导
+- **建议**：无需额外处理
+
+### 6.5 `friend.remark` 被复用为好友备注名
+
+- **位置**：`friend.remark`
+- **现状**：`remark` 是审计基类的通用备注列，在好友场景被复用为「好友备注名」，
+  建立关系时默认填对方昵称
+- **v2 处置**：`friend.Friend.Remark` 保留该语义并在注释中说明
+- **建议**：若后续需要同时保留「备注名」与「通用备注」，需拆列
+
+### 6.6 `questions` 表四个选项列
 
 - **位置**：`questions.option_a` ~ `option_d`
 - **现状**：同一件东西的四份拷贝，任何遍历都要写死四次
