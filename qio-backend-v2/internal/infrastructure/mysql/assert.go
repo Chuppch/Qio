@@ -3,6 +3,7 @@ package mysql
 import (
 	"github.com/Chuppch/Qio/qio-backend-v2/internal/domain/bottle"
 	"github.com/Chuppch/Qio/qio-backend-v2/internal/domain/dict"
+	"github.com/Chuppch/Qio/qio-backend-v2/internal/domain/explore"
 	"github.com/Chuppch/Qio/qio-backend-v2/internal/domain/shop"
 	"github.com/Chuppch/Qio/qio-backend-v2/internal/domain/user"
 )
@@ -11,8 +12,9 @@ import (
 //
 // 接口新增方法而实现未跟上时，这里会直接编译失败，不必等到运行期。
 var (
-	_ user.Repository   = (*userRepository)(nil)
-	_ dict.Repository   = (*dictRepository)(nil)
-	_ shop.Repository   = (*shopRepository)(nil)
-	_ bottle.Repository = (*bottleRepository)(nil)
+	_ user.Repository    = (*userRepository)(nil)
+	_ dict.Repository    = (*dictRepository)(nil)
+	_ shop.Repository    = (*shopRepository)(nil)
+	_ bottle.Repository  = (*bottleRepository)(nil)
+	_ explore.Repository = (*exploreRepository)(nil)
 )

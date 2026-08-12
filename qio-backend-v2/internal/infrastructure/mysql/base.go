@@ -15,9 +15,9 @@ import "time"
 type auditFields struct {
 	ID         int64     `gorm:"column:id;primaryKey;autoIncrement"`
 	CreateUser int64     `gorm:"column:create_user"`
-	CreateTime time.Time `gorm:"column:create_time"`
+	CreateTime time.Time `gorm:"column:create_time;autoCreateTime"`
 	UpdateUser int64     `gorm:"column:update_user"`
-	UpdateTime time.Time `gorm:"column:update_time"`
+	UpdateTime time.Time `gorm:"column:update_time;autoUpdateTime"`
 }
 
 // auditFieldsStrUser 适用于 create_user / update_user 为 varchar(50) 的表：
@@ -27,7 +27,7 @@ type auditFields struct {
 type auditFieldsStrUser struct {
 	ID         int64     `gorm:"column:id;primaryKey;autoIncrement"`
 	CreateUser string    `gorm:"column:create_user"`
-	CreateTime time.Time `gorm:"column:create_time"`
+	CreateTime time.Time `gorm:"column:create_time;autoCreateTime"`
 	UpdateUser string    `gorm:"column:update_user"`
-	UpdateTime time.Time `gorm:"column:update_time"`
+	UpdateTime time.Time `gorm:"column:update_time;autoUpdateTime"`
 }
