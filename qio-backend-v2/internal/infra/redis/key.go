@@ -1,6 +1,10 @@
 package redis
 
-import "strconv"
+import (
+	"strconv"
+
+	"github.com/Chuppch/Qio/qio-backend-v2/internal/domain/user"
+)
 
 // 缓存键构造。
 //
@@ -113,3 +117,50 @@ func GameFortuneUserKey(userID int64) string { return prefixGameFortuneUser + it
 func TaskDetailsKey() string { return keyTaskDetails }
 
 func itoa(v int64) string { return strconv.FormatInt(v, 10) }
+
+// ---- 验证码 ----
+//
+// v1 把图形验证码与邮箱验证码直接以 uuid、邮箱地址作为裸键存入 Redis，
+// 不同用途之间没有隔离，邮箱既可能是注册验证码的键也可能是重置密码的键。
+// 这里补上前缀与用途区分，避免互相覆盖。
+
+const (
+	prefixCaptcha   = "verify:captcha:"
+	prefixEmailCode = "verify:email:"
+)
+
+// captchaKey 图形验证码键，key 为签发时生成的随机 uuid。
+func captchaKey(key string) string { return prefixCaptcha + key }
+
+// emailCodeKey 邮箱验证码键，按用途隔离。
+func emailCodeKey(scene user.CodeScene, email string) string {
+	return prefixEmailCode + string(scene) + ":" + email
+}
+
+// ---- 每日任务与签到 ----
+
+const (
+	prefixTaskUser     = "task:user:"
+	keyTaskTemplate    = "task:taskDetails"
+	prefixSignedUser   = "sign:signed:"
+	prefixSignAwardCfg = "sign:award:"
+)
+
+// taskUserKey 用户某日的任务状态键，date 形如 20260811。
+func taskUserKey(userID int64, date string) string {
+	return prefixTaskUser + itoa(userID) + ":" + date
+}
+
+// taskTemplateKey 全局任务模板键，由运营配置。
+func taskTemplateKey() string { return keyTaskTemplate }
+
+// signedUserKey 用户某月的签到位图键，month 形如 202608。
+//
+// v1 用 sign:signed:<日期>:user-<id> 逐日一个键，v2 改为按月一个位图：
+// 一次读取即可得到整月签到情况，签到日历不必发起 31 次查询。
+func signedUserKey(userID int64, month string) string {
+	return prefixSignedUser + month + ":user-" + itoa(userID)
+}
+
+// signAwardKey 签到奖励配置键。
+func signAwardKey(date string) string { return prefixSignAwardCfg + date }

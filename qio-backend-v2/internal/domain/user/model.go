@@ -1,49 +1,111 @@
 package user
 
-import "regexp"
+import "time"
 
-// 账号规则。
-//
-// 迁移自 v1 的 AccountValidator 与 UserConstants。
-//
-// v1 存在一处自相矛盾：UserConstants.USERNAME_MIN_LENGTH 声明为 6，但
-// AccountValidator 的正则实际允许 4 位（首字母 + 3 位）。这里以正则为准，
-// 统一为 4 位下限，并把长度常量与正则收在同一处，避免再次分叉。
+// AccountStatus 是账号的启用状态。
+type AccountStatus int
+
 const (
-	// UsernameMinLength 用户名最短长度
-	UsernameMinLength = 4
-	// UsernameMaxLength 用户名最长长度
-	UsernameMaxLength = 20
-
-	// PasswordMinLength 密码最短长度
-	PasswordMinLength = 6
-	// PasswordMaxLength 密码最长长度
-	PasswordMaxLength = 20
+	StatusActive   AccountStatus = 0 // 正常
+	StatusDisabled AccountStatus = 1 // 停用
 )
 
-// usernamePattern 要求 4-20 位，由字母开头，其余为字母、数字或下划线。
-var usernamePattern = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_]{3,19}$`)
+// Enabled 表示账号未被停用。
+func (s AccountStatus) Enabled() bool { return s == StatusActive }
 
-// emailPattern 与 v1 保持一致。
-var emailPattern = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$`)
+// ItemType 是道具类型。取值与签到奖励、商城共用同一套编码。
+type ItemType int
 
-// ValidUsername 校验用户名是否符合规则。
-func ValidUsername(s string) bool {
-	return usernamePattern.MatchString(s)
+const (
+	ItemMoney        ItemType = 1 // 猪仔钱
+	ItemFunctionCard ItemType = 2 // 功能卡
+	ItemFont         ItemType = 3 // 字体
+	ItemFontColor    ItemType = 4 // 字体颜色
+	ItemPaper        ItemType = 5 // 信纸
+	ItemCollection   ItemType = 6 // 其他收藏品，含印章
+)
+
+// User 是用户聚合根。
+type User struct {
+	ID       int64
+	Username string
+	Nickname string
+	Email    string
+	Sex      string
+	Avatar   string
+
+	// PasswordHash 只存摘要，不存明文
+	PasswordHash string
+
+	Status  AccountStatus
+	Deleted bool
+
+	// Money 是猪仔钱余额
+	Money int64
+
+	// Addresses 至多一条 IsDefault 为 true
+	Addresses []Address
+
+	OwnedItems []OwnedItem
+
+	LastLoginIP string
+	LastLoginAt time.Time
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
-// ValidEmail 校验邮箱格式是否合法。
-func ValidEmail(s string) bool {
-	return emailPattern.MatchString(s)
+// Active 表示账号可正常使用，即未停用且未删除。
+func (u *User) Active() bool { return u.Status.Enabled() && !u.Deleted }
+
+// Affordable 表示余额足以支付指定金额。
+func (u *User) Affordable(amount int64) bool {
+	return amount >= 0 && u.Money >= amount
 }
 
-// ValidPassword 校验密码长度是否在允许区间内。
-func ValidPassword(s string) bool {
-	n := len([]rune(s))
-	return n >= PasswordMinLength && n <= PasswordMaxLength
+// DefaultAddress 返回默认地址，不存在时返回零值与 false。
+func (u *User) DefaultAddress() (Address, bool) {
+	for _, a := range u.Addresses {
+		if a.IsDefault {
+			return a, true
+		}
+	}
+	return Address{}, false
 }
 
-// ValidAccount 校验登录账号，用户名或邮箱二者之一合法即可。
-func ValidAccount(s string) bool {
-	return ValidUsername(s) || ValidEmail(s)
+// Owns 表示用户已拥有指定道具。
+func (u *User) Owns(t ItemType, itemID int64) bool {
+	for _, it := range u.OwnedItems {
+		if it.Type == t && it.ItemID == itemID {
+			return true
+		}
+	}
+	return false
+}
+
+// CodeScene 区分邮箱验证码的用途。
+type CodeScene string
+
+const (
+	CodeSceneRegister      CodeScene = "register"       // 注册
+	CodeSceneResetPassword CodeScene = "reset-password" // 重置密码
+)
+
+// Address 是地址簿中的一条地址，随 User 一起存取。
+type Address struct {
+	ID               int64
+	CountryID        int64
+	FormattedAddress string
+	Longitude        float64
+	Latitude         float64
+	IsDefault        bool
+}
+
+// OwnedItem 是背包中的一件道具，随 User 一起存取。
+//
+// Count 用于可叠加的道具（功能卡）；字体、信纸等不可叠加的恒为 1。
+type OwnedItem struct {
+	Type   ItemType
+	ItemID int64
+	Count  int
 }
