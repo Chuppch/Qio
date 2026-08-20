@@ -1,6 +1,6 @@
 <p align="center">
 	<!-- <img alt="logo" src="https://raw.githubusercontent.com/trashwbin/Qiaopi/refs/heads/master/init_qiaopi/images/logo.png"> -->
-	<img alt="logo" src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/docs/image/主页面照片.png">
+	<img alt="logo" src="../public/brand/qio-hero.png">
 </p>
 <h4 align="center">跨越四海，侨缘线牵——侨缘信使，让世界没有距离。</h4>
 <p align="center">
@@ -34,61 +34,61 @@
     </tr>
     <tr>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/home.png" alt="主页" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/qio-v1/home.jpg" alt="主页" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>主页</b></small>
         </td>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/home-receive.png" alt="收信页面" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/qio-v1/home-receive.png" alt="收信页面" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>收信页面</b></small>
         </td>
     </tr>
     <tr>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/home-introduce.gif" alt="介绍功能" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/qio-v1/home-introduce.gif" alt="介绍功能" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>介绍功能</b></small>
         </td>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/home-history.gif" alt="历史功能" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/qio-v1/home-history.gif" alt="历史功能" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>历史功能</b></small>
         </td>
     </tr>
     <tr>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/write-letter.gif" alt="写信功能" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/qio-v1/write-letter.gif" alt="写信功能" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>写信功能</b></small>
         </td>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/nav-ai.png" alt="AI导航" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/qio-v1/nav-ai.png" alt="AI导航" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>AI导航</b></small>
         </td>
     </tr>
 	<tr>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/send-letter.gif" alt="寄信功能" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/qio-v1/send-letter.gif" alt="寄信功能" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>寄信功能</b></small>
         </td>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/drifting.png" alt="漂流瓶" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/qio-v1/drifting.png" alt="漂流瓶" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>漂流瓶</b></small>
         </td>
     </tr>	 
     <tr>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/game-explore.gif" alt="探索游戏" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/qio-v1/game-explore.gif" alt="探索游戏" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>探索游戏</b></small>
         </td>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/game-question.gif" alt="问答游戏" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/qio-v1/game-question.gif" alt="问答游戏" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>问答游戏</b></small>
         </td>
     </tr>
 	<tr>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/shop.gif" alt="商店" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/qio-v1/shop.gif" alt="商店" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>商店</b></small>
         </td>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/marketing.gif" alt="营销活动" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/qio-v1/marketing.gif" alt="营销活动" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>营销活动</b></small>
         </td>
     </tr>
@@ -101,27 +101,27 @@
     </tr>
     <tr>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/docs/image/对齐.gif" alt="对齐功能演示" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/agent-hub/align.gif" alt="对齐功能演示" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>对齐功能</b></small>
         </td>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/docs/image/copy.gif" alt="复制功能演示" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/agent-hub/copy.gif" alt="复制功能演示" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>快捷键功能</b></small>
         </td>
     </tr>
     <tr>
         <td align="center" colspan="2">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/docs/image/高亮动画.gif" alt="高亮动画演示" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/agent-hub/highlight.gif" alt="高亮动画演示" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>高亮动画</b></small>
         </td>
     </tr>
     <tr>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/docs/image/agent列表.png" alt="Agent列表" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/agent-hub/agent-list.png" alt="Agent列表" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>Agent列表</b></small>
         </td>
         <td align="center" width="50%">
-            <img src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/docs/image/配置页面.png" alt="配置页面" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/agent-hub/configuration.png" alt="配置页面" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>配置页面</b></small>
         </td>
     </tr>
@@ -135,15 +135,15 @@
 
 本项目使用了[高德开放平台API](https://console.amap.com/dev/key/app)，需自行申请，并在 `index.html`中替换
 
-![](https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/amap-key.png)
+![](../public/previews/qio-v1/amap-key.png)
 
-![](https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/index-amap.png)
+![](../public/previews/qio-v1/index-amap.png)
 
 ### WebSocket、vue.config.js
 
 项目内多次使用WebSocket和axios请求，需替换后端服务地址为您的后端服务地址
 
-![](https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/init_qiaopi_vue/images/init.png)
+![](../public/previews/qio-v1/init.png)
 
 ### AES密钥⬆️
 

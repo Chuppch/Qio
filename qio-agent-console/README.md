@@ -3,7 +3,7 @@
 侨缘信使智能中台的内部配置与运营控制台。
 
 <p align="center">
-	<img alt="logo" src="https://raw.githubusercontent.com/Chuppch/qiaopi-master-frontend/refs/heads/master/docs/image/主页面照片.png">
+	<img alt="logo" src="../public/brand/qio-hero.png">
 </p>
 <h4 align="center">跨越四海，侨缘线牵——侨缘信使，让世界没有距离。</h4>
 <p align="center">
@@ -37,27 +37,27 @@
 <table>
     <tr>
         <td align="center" width="50%">
-            <img src="docs/image/对齐.gif" alt="对齐功能演示" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/agent-hub/align.gif" alt="对齐功能演示" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>对齐功能</b></small>
         </td>
         <td align="center" width="50%">
-            <img src="docs/image/copy.gif" alt="复制功能演示" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/agent-hub/copy.gif" alt="复制功能演示" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>快捷键功能</b></small>
         </td>
     </tr>
     <tr>
         <td align="center" colspan="2">
-            <img src="docs/image/高亮动画.gif" alt="高亮动画演示" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/agent-hub/highlight.gif" alt="高亮动画演示" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>高亮动画</b></small>
         </td>
     </tr>
     <tr>
         <td align="center" width="50%">
-            <img src="docs/image/agent列表.png" alt="Agent列表" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/agent-hub/agent-list.png" alt="Agent列表" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>Agent列表</b></small>
         </td>
         <td align="center" width="50%">
-            <img src="docs/image/配置页面.png" alt="配置页面" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+            <img src="../public/previews/agent-hub/configuration.png" alt="配置页面" style="max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
             <br/><small><b>配置页面</b></small>
         </td>
     </tr>
